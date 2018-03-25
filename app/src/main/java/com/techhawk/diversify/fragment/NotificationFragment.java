@@ -13,7 +13,7 @@ import com.techhawk.diversify.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NotificationFragment extends Fragment {
+public class NotificationFragment extends BaseFragment {
 
 
     public NotificationFragment() {

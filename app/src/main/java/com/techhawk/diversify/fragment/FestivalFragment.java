@@ -13,7 +13,7 @@ import com.techhawk.diversify.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FestivalFragment extends Fragment {
+public class FestivalFragment extends BaseFragment {
 
 
     public FestivalFragment() {

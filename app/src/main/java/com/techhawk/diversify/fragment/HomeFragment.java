@@ -13,7 +13,7 @@ import com.techhawk.diversify.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends BaseFragment {
 
 
     public HomeFragment() {
