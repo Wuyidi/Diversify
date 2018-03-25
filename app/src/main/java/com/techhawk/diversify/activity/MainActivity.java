@@ -19,11 +19,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.techhawk.diversify.R;
 import com.techhawk.diversify.fragment.FestivalFragment;
 import com.techhawk.diversify.fragment.HomeFragment;
 import com.techhawk.diversify.fragment.NotificationFragment;
 import com.techhawk.diversify.fragment.SettingFragment;
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+
+
 
 public class MainActivity extends BaseActivity {
 
@@ -87,8 +91,8 @@ public class MainActivity extends BaseActivity {
     private void loadNavHeader() {
         // loading header background image
         Glide.with(this).load(urlNavHeaderBg)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .transition(withCrossFade())
+                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL))
                 .into(imgNavHeaderBg);
         // showing dot next to notifications label
         navigationView.getMenu().getItem(2).setActionView(R.layout.menu_dot);
@@ -228,13 +232,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    private void initialNavHeader() {
-        // loading header background image
-        Glide.with(this).load(urlNavHeaderBg)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imgNavHeaderBg);
-    }
 
     @Override
     public void onBackPressed() {

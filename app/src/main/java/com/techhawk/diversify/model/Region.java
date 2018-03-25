@@ -1,14 +1,24 @@
 package com.techhawk.diversify.model;
 
-import java.util.List;
-
 /**
- * Created by Yidi Wu on 22/3/18.
+ * Created by Yidi Wu on 26/3/18.
  */
 
 public class Region {
-    private String regionName;
-    private String regionId;
-    private List<String> holidays;
+    public String name;
 
+    public Region() {
+    }
+
+    public Region(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
