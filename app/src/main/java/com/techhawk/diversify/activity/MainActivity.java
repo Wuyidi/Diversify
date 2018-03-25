@@ -87,6 +87,9 @@ public class MainActivity extends BaseActivity {
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imgNavHeaderBg);
+        // showing dot next to notifications label
+        navigationView.getMenu().getItem(2).setActionView(R.layout.menu_dot);
+
     }
 
     // Switch fragment by navigation drawer
