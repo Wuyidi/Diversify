@@ -5,4 +5,7 @@
     <dimen name="nav_header_height">192dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="img_festival_bg_height">150dp</dimen>
+    <dimen name="header_text_size">28sp</dimen>
+    <dimen name="festival_history_text_size">18sp</dimen>
 </resources>

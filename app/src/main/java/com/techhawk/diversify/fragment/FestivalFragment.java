@@ -1,6 +1,7 @@
 package com.techhawk.diversify.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.techhawk.diversify.R;
+import com.techhawk.diversify.activity.ViewFestivalActivity;
 import com.techhawk.diversify.model.Holiday;
 
 /**
@@ -110,8 +112,9 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         ListView listView = (ListView) adapterView;
         Holiday holiday = (Holiday) listView.getItemAtPosition(i);
-
-
+        Intent intent = new Intent(getActivity(), ViewFestivalActivity.class);
+        intent.putExtra("festival", holiday);
+        startActivity(intent);
     }
 
     private FirebaseListAdapter initialFirebaseAdapter(Query query) {

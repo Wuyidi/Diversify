@@ -1,9 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.techhawk.diversify.activity.ViewFestivalActivity">
+    tools:context="com.techhawk.diversify.activity.ViewFestivalActivity"
+  >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_horizontal_margin">
+            <ImageView
+                android:id="@+id/img_festival_bg"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/img_festival_bg_height"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ic_launcher" />
 
-</android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/festival_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="History"
+                android:textSize="@dimen/header_text_size"
+                android:textStyle="bold|italic" />
+
+            <TextView
+                android:id="@+id/festival_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="8sp"
+                android:text="history"
+                android:textSize="@dimen/festival_history_text_size" />
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+    </ScrollView>
+
+
+
+
+</LinearLayout>
