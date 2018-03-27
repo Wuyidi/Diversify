@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,6 +26,8 @@ import com.google.firebase.database.Query;
 import com.techhawk.diversify.R;
 import com.techhawk.diversify.activity.ViewFestivalActivity;
 import com.techhawk.diversify.model.Holiday;
+import com.twiceyuan.dropdownmenu.ArrayDropdownAdapter;
+import com.twiceyuan.dropdownmenu.DropdownMenu;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +38,8 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
     private SearchView searchView;
     private ListView festivalView;
     private DatabaseReference festivalRef;
+
+    private final String[] COUNTRIES = new String[] {"Australia", "China"};
 
     public FestivalFragment() {
         // Required empty public constructor
@@ -48,6 +53,12 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_festival, container, false);
         festivalView = rootView.findViewById(R.id.festival_list_view);
+        // Set countries filter
+        final DropdownMenu countriesMenu = (DropdownMenu) rootView.findViewById(R.id.dm_dropdown);
+        countriesMenu.setAdapter(new ArrayDropdownAdapter(getContext(),R.layout.dropdown_light_item_oneline,COUNTRIES));
+        countriesMenu.getListView().setDivider(ContextCompat.getDrawable(getContext(),R.drawable.inset_divider));
+        countriesMenu.getListView().setDividerHeight(1);
+
         // Connect to Firebase database
         festivalRef = FirebaseDatabase.getInstance().getReference().child("holidays");
         // Set up FirebaseListAdapter

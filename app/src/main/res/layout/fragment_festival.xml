@@ -2,26 +2,87 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:dm="http://schemas.android.com/apk/res-auto"
     tools:context="com.techhawk.diversify.fragment.FestivalFragment">
 
-    <ListView
-        android:id="@+id/festival_list_view"
-        android:scrollbars="vertical"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/list_festival_item"></ListView>
-    <TextView
-        android:id="@+id/empty_festival"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:text="NO FESTIVAL AVAILABLE!"
-        android:textAlignment="center"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="32dp"
-        android:visibility="gone"/>
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <com.twiceyuan.dropdownmenu.DropdownMenu
+                android:id="@+id/dm_dropdown"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                dm:iconColor="#aaa"
+                dm:listBgColor="#fff"
+                dm:titleBgColor="#eee"
+                dm:titleHighLight="@color/colorPrimary"
+                dm:titleText="Select Countries"
+                dm:titleTextSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="1dp"
+                android:layout_height="40dp"
+                android:background="#eee">
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="32dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:background="#ccc"/>
+
+
+            </LinearLayout>
+
+            <com.twiceyuan.dropdownmenu.DropdownMenu
+                android:id="@+id/dm_dropdown2"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                dm:iconColor="#aaa"
+                dm:listBgColor="#444"
+                dm:titleBgColor="#eee"
+                dm:titleColor="#222"
+                dm:titleHighLight="@color/colorPrimary"
+                dm:titleText="Select Type"
+                dm:titleTextSize="14sp"/>
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccc"/>
+        <TextView
+            android:id="@+id/empty_festival"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:text="NO FESTIVAL AVAILABLE!"
+            android:textAlignment="center"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="32dp"
+            android:visibility="gone"/>
+
+        <ListView
+            android:id="@+id/festival_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="447dp"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/list_festival_item"
+            ></ListView>
+
+
+    </LinearLayout>
+
 
 </FrameLayout>
