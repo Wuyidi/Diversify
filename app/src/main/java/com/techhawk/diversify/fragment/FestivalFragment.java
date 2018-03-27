@@ -6,36 +6,33 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.techhawk.diversify.R;
 import com.techhawk.diversify.model.Holiday;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FestivalFragment extends BaseFragment {
+public class FestivalFragment extends BaseFragment implements AdapterView.OnItemClickListener {
 
     // Instance variables
     private SearchView searchView;
     private ListView festivalView;
-    private DatabaseReference festivalReference;
+    private DatabaseReference festivalRef;
 
     public FestivalFragment() {
         // Required empty public constructor
@@ -47,26 +44,18 @@ public class FestivalFragment extends BaseFragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View currentView = inflater.inflate(R.layout.fragment_festival, container, false);
-        festivalView = currentView.findViewById(R.id.festival_list_view);
+        View rootView = inflater.inflate(R.layout.fragment_festival, container, false);
+        festivalView = rootView.findViewById(R.id.festival_list_view);
         // Connect to Firebase database
-        festivalReference = FirebaseDatabase.getInstance().getReference().child("holidays");
+        festivalRef = FirebaseDatabase.getInstance().getReference().child("holidays");
         // Set up FirebaseListAdapter
-        FirebaseListOptions<Holiday> options = new FirebaseListOptions.Builder<Holiday>()
-                .setQuery(festivalReference, Holiday.class).setLayout(R.layout.list_festival_item).setLifecycleOwner(this).build();
-        FirebaseListAdapter<Holiday> adapter = new FirebaseListAdapter<Holiday>(options) {
-            @Override
-            protected void populateView(View v, Holiday holiday, int position) {
-                ((TextView) v.findViewById(R.id.list_festival_name)).setText(holiday.getName());
-                ((TextView) v.findViewById(R.id.list_festival_comments)).setText(holiday.getComments());
-            }
-        };
+        FirebaseListAdapter adapter = initialFirebaseAdapter(festivalRef);
+
         festivalView.setAdapter(adapter);
+        festivalView.setEmptyView(rootView.findViewById(R.id.empty_festival));
+        festivalView.setOnItemClickListener(this);
 
-        festivalView.setEmptyView(currentView.findViewById(R.id.empty_festival));
-
-
-        return currentView;
+        return rootView;
     }
 
     @Override
@@ -79,8 +68,32 @@ public class FestivalFragment extends BaseFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_view, menu);
         setSearchView(menu);
+        // Create an onQueryText Listener Anonymous class
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Make first query text upper case
+                if (newText.length() > 0) {
+                    newText = newText.substring(0, 1).toUpperCase() + newText.substring(1);
+                }
+                Query query = festivalRef.orderByChild("name")
+                        .startAt(newText)
+                        .endAt(String.valueOf(newText) + "\uf8ff");
+
+                FirebaseListAdapter adapter = initialFirebaseAdapter(query);
+                festivalView.setAdapter(adapter);
+
+                return true;
+            }
+        });
         super.onCreateOptionsMenu(menu, inflater);
     }
+
 
     // Set up search view
     private void setSearchView(Menu menu) {
@@ -90,7 +103,27 @@ public class FestivalFragment extends BaseFragment {
         searchView.setQueryHint("Festival Name");
         searchView.setSubmitButtonEnabled(false);
         item.setActionView(searchView);
+    }
+
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        ListView listView = (ListView) adapterView;
+        Holiday holiday = (Holiday) listView.getItemAtPosition(i);
+
 
     }
 
+    private FirebaseListAdapter initialFirebaseAdapter(Query query) {
+        FirebaseListOptions<Holiday> options = new FirebaseListOptions.Builder<Holiday>()
+                .setQuery(query, Holiday.class).setLayout(R.layout.list_festival_item).setLifecycleOwner(this).build();
+        FirebaseListAdapter<Holiday> adapter = new FirebaseListAdapter<Holiday>(options) {
+            @Override
+            protected void populateView(View v, Holiday holiday, int position) {
+                ((TextView) v.findViewById(R.id.list_festival_name)).setText(holiday.getName());
+                ((TextView) v.findViewById(R.id.list_festival_comments)).setText(holiday.getComments());
+            }
+        };
+        return adapter;
+    }
 }
