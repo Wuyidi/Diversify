@@ -28,6 +28,7 @@ import com.techhawk.diversify.activity.ViewFestivalActivity;
 import com.techhawk.diversify.model.Holiday;
 import com.twiceyuan.dropdownmenu.ArrayDropdownAdapter;
 import com.twiceyuan.dropdownmenu.DropdownMenu;
+import com.twiceyuan.dropdownmenu.OnDropdownItemClickListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,8 +39,13 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
     private SearchView searchView;
     private ListView festivalView;
     private DatabaseReference festivalRef;
-
+    // list used to inflate adapter
     private final String[] COUNTRIES = new String[] {"Australia", "China"};
+    private final String[] TYPES = new String[] {"National Holiday","Regional Holiday", "Not a Public Holiday"};
+    // tags used to attach the filter
+    private static final int TAG_AUS = 0;
+    private static final int TAG_CH = 1;
+    private static int CURRENT_TAG = TAG_AUS;
 
     public FestivalFragment() {
         // Required empty public constructor
@@ -59,15 +65,27 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
         countriesMenu.getListView().setDivider(ContextCompat.getDrawable(getContext(),R.drawable.inset_divider));
         countriesMenu.getListView().setDividerHeight(1);
 
-        // Connect to Firebase database
-        festivalRef = FirebaseDatabase.getInstance().getReference().child("holidays");
-        // Set up FirebaseListAdapter
-        FirebaseListAdapter adapter = initialFirebaseAdapter(festivalRef);
 
-        festivalView.setAdapter(adapter);
+        countriesMenu.setOnItemClickListener(new OnDropdownItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                CURRENT_TAG = i;
+                switch (CURRENT_TAG) {
+                    case TAG_AUS:
+                        setUpListView(COUNTRIES[CURRENT_TAG]);
+                        break;
+                    case TAG_CH:
+                        setUpListView(COUNTRIES[CURRENT_TAG]);
+                        break;
+                    default:
+                        CURRENT_TAG = 0;
+                        setUpListView(COUNTRIES[CURRENT_TAG]);
+                }
+            }
+        });
+
+
         festivalView.setEmptyView(rootView.findViewById(R.id.empty_festival));
-        festivalView.setOnItemClickListener(this);
-
         return rootView;
     }
 
@@ -104,6 +122,7 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
                 return true;
             }
         });
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -116,6 +135,19 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
         searchView.setQueryHint("Festival Name");
         searchView.setSubmitButtonEnabled(false);
         item.setActionView(searchView);
+    }
+
+    // Set up list view
+    private void setUpListView(String ref) {
+        // Connect to Firebase database
+        festivalRef = FirebaseDatabase.getInstance().getReference().child("holidays/" + ref);
+        // Set up FirebaseListAdapter
+        FirebaseListAdapter adapter = initialFirebaseAdapter(festivalRef);
+
+        festivalView.setAdapter(adapter);
+
+        festivalView.setOnItemClickListener(this);
+
     }
 
 
@@ -140,4 +172,5 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
         };
         return adapter;
     }
+
 }
