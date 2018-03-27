@@ -47,7 +47,7 @@
                 android:layout_height="40dp"
                 android:layout_weight="1"
                 dm:iconColor="#aaa"
-                dm:listBgColor="#444"
+                dm:listBgColor="#fff"
                 dm:titleBgColor="#eee"
                 dm:titleColor="#222"
                 dm:titleHighLight="@color/colorPrimary"

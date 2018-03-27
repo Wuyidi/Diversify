@@ -28,6 +28,7 @@ import com.techhawk.diversify.activity.ViewFestivalActivity;
 import com.techhawk.diversify.model.Holiday;
 import com.twiceyuan.dropdownmenu.ArrayDropdownAdapter;
 import com.twiceyuan.dropdownmenu.DropdownMenu;
+import com.twiceyuan.dropdownmenu.MenuManager;
 import com.twiceyuan.dropdownmenu.OnDropdownItemClickListener;
 
 /**
@@ -41,11 +42,16 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
     private DatabaseReference festivalRef;
     // list used to inflate adapter
     private final String[] COUNTRIES = new String[] {"Australia", "China"};
-    private final String[] TYPES = new String[] {"National Holiday","Regional Holiday", "Not a Public Holiday"};
+    private final String[] TYPES = new String[] {"All","National","Regional", "Not Public"};
     // tags used to attach the filter
     private static final int TAG_AUS = 0;
     private static final int TAG_CH = 1;
     private static int CURRENT_TAG = TAG_AUS;
+    private static final int TAG_ALL = 0;
+    private static final int TAG_NATIONAL = 1;
+    private static final int TAG_REGIONAL = 2;
+    private static final int TAG_PUBLIC = 3;
+    private static int CURRENT_TYPE = TAG_ALL;
 
     public FestivalFragment() {
         // Required empty public constructor
@@ -65,27 +71,37 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
         countriesMenu.getListView().setDivider(ContextCompat.getDrawable(getContext(),R.drawable.inset_divider));
         countriesMenu.getListView().setDividerHeight(1);
 
+        final DropdownMenu typeMenu = rootView.findViewById(R.id.dm_dropdown2);
+        typeMenu.setAdapter(new ArrayDropdownAdapter(getContext(),R.layout.dropdown_light_item_oneline, TYPES));
+        typeMenu.getListView().setDivider(ContextCompat.getDrawable(getContext(),R.drawable.inset_divider));
+        typeMenu.getListView().setDividerHeight(1);
 
+        festivalRef = FirebaseDatabase.getInstance().getReference().child("holidays/" + COUNTRIES[CURRENT_TAG]);
         countriesMenu.setOnItemClickListener(new OnDropdownItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 CURRENT_TAG = i;
-                switch (CURRENT_TAG) {
-                    case TAG_AUS:
-                        setUpListView(COUNTRIES[CURRENT_TAG]);
-                        break;
-                    case TAG_CH:
-                        setUpListView(COUNTRIES[CURRENT_TAG]);
-                        break;
-                    default:
-                        CURRENT_TAG = 0;
-                        setUpListView(COUNTRIES[CURRENT_TAG]);
+                setUpListView(COUNTRIES[CURRENT_TAG]);
+            }
+        });
+
+        typeMenu.setOnItemClickListener(new OnDropdownItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                CURRENT_TYPE = i;
+                if (CURRENT_TYPE == 0) {
+                    FirebaseListAdapter adapter = initialFirebaseAdapter(festivalRef);
+                    festivalView.setAdapter(adapter);
+                } else {
+                    setUpListView(COUNTRIES[CURRENT_TAG]);
                 }
             }
         });
 
 
         festivalView.setEmptyView(rootView.findViewById(R.id.empty_festival));
+        festivalView.setOnItemClickListener(this);
+        MenuManager.group(countriesMenu,typeMenu);
         return rootView;
     }
 
@@ -112,7 +128,8 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
                 if (newText.length() > 0) {
                     newText = newText.substring(0, 1).toUpperCase() + newText.substring(1);
                 }
-                Query query = festivalRef.orderByChild("name")
+                Query query = festivalRef
+                        .orderByChild("name")
                         .startAt(newText)
                         .endAt(String.valueOf(newText) + "\uf8ff");
 
@@ -142,13 +159,20 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
         // Connect to Firebase database
         festivalRef = FirebaseDatabase.getInstance().getReference().child("holidays/" + ref);
         // Set up FirebaseListAdapter
-        FirebaseListAdapter adapter = initialFirebaseAdapter(festivalRef);
+        Query query = festivalRef.orderByChild("type").equalTo(TYPES[CURRENT_TYPE]);
+        FirebaseListOptions<Holiday> options = new FirebaseListOptions.Builder<Holiday>()
+                .setQuery(query, Holiday.class).setLayout(R.layout.list_festival_item).setLifecycleOwner(this).build();
+        FirebaseListAdapter<Holiday> adapter = new FirebaseListAdapter<Holiday>(options) {
+            @Override
+            protected void populateView(View v, Holiday holiday, int position) {
+                ((TextView) v.findViewById(R.id.list_festival_name)).setText(holiday.getName());
+                ((TextView) v.findViewById(R.id.list_festival_comments)).setText(holiday.getComments());
+            }
+        };
 
         festivalView.setAdapter(adapter);
-
-        festivalView.setOnItemClickListener(this);
-
     }
+
 
 
     @Override
