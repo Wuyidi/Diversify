@@ -82,6 +82,7 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 CURRENT_TAG = i;
                 if (CURRENT_TYPE == 0) {
+                    festivalRef = FirebaseDatabase.getInstance().getReference().child("holidays/" + COUNTRIES[CURRENT_TAG]);
                     FirebaseListAdapter adapter = initialFirebaseAdapter(festivalRef);
                     festivalView.setAdapter(adapter);
                 } else {
