@@ -81,7 +81,12 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 CURRENT_TAG = i;
-                setUpListView(COUNTRIES[CURRENT_TAG]);
+                if (CURRENT_TYPE == 0) {
+                    FirebaseListAdapter adapter = initialFirebaseAdapter(festivalRef);
+                    festivalView.setAdapter(adapter);
+                } else {
+                    setUpListView(COUNTRIES[CURRENT_TAG]);
+                }
             }
         });
 
