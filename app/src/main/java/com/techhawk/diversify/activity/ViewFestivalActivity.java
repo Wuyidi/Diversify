@@ -13,7 +13,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.techhawk.diversify.R;
 import com.techhawk.diversify.model.Holiday;
-import com.techhawk.diversify.tools.TextJustification;
+
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -36,11 +36,7 @@ public class ViewFestivalActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(festival.getName());
         loadImg(festival.getImgUrl());
         header.setText("History of " + festival.getName());
-        //history.setText(new SpannableString(festival.getHistory()));
         history.setText(festival.getHistory());
-        //TextJustification.justify(history);
-
-
     }
 
     @Override
