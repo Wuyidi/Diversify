@@ -33,6 +33,7 @@
                 android:id="@+id/festival_history"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:lineSpacingExtra="8sp"
                 android:text="history"
                 android:textSize="@dimen/festival_history_text_size" />
@@ -40,8 +41,4 @@
         </android.support.v7.widget.LinearLayoutCompat>
 
     </ScrollView>
-
-
-
-
 </LinearLayout>

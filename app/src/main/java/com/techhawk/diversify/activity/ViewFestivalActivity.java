@@ -36,8 +36,9 @@ public class ViewFestivalActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(festival.getName());
         loadImg(festival.getImgUrl());
         header.setText("History of " + festival.getName());
-        history.setText(new SpannableString(festival.getHistory()));
-        TextJustification.justify(history);
+        //history.setText(new SpannableString(festival.getHistory()));
+        history.setText(festival.getHistory());
+        //TextJustification.justify(history);
 
 
     }

@@ -33,6 +33,7 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:11.8.0'
     compile 'com.google.android.gms:play-services-auth:11.8.0'
     compile 'com.github.twiceyuan:DropdownMenu:1.1.6'
+    compile 'com.github.bluejamesbond:textjustify-android:2.1.6'
     testCompile 'junit:junit:4.12'
 }
 

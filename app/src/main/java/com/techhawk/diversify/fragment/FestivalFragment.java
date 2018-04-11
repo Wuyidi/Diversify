@@ -76,15 +76,14 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
         typeMenu.getListView().setDivider(ContextCompat.getDrawable(getContext(),R.drawable.inset_divider));
         typeMenu.getListView().setDividerHeight(1);
 
-        festivalRef = FirebaseDatabase.getInstance().getReference().child("holidays/" + COUNTRIES[CURRENT_TAG]);
+        initListView();
+
         countriesMenu.setOnItemClickListener(new OnDropdownItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 CURRENT_TAG = i;
                 if (CURRENT_TYPE == 0) {
-                    festivalRef = FirebaseDatabase.getInstance().getReference().child("holidays/" + COUNTRIES[CURRENT_TAG]);
-                    FirebaseListAdapter adapter = initialFirebaseAdapter(festivalRef);
-                    festivalView.setAdapter(adapter);
+                    initListView();
                 } else {
                     setUpListView(COUNTRIES[CURRENT_TAG]);
                 }
@@ -179,6 +178,11 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
         festivalView.setAdapter(adapter);
     }
 
+    private void initListView(){
+        festivalRef = FirebaseDatabase.getInstance().getReference().child("holidays/" + COUNTRIES[CURRENT_TAG]);
+        FirebaseListAdapter adapter = initialFirebaseAdapter(festivalRef);
+        festivalView.setAdapter(adapter);
+    }
 
 
     @Override
