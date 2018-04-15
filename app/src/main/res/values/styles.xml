@@ -11,5 +11,13 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
+    <style name="AppTheme.Dark" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryBlack</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryBlackDark</item>
+        <item name="colorAccent">@color/colorAccentBlack</item>
+    </style>
+    <style name="my_tab_text" parent="Base.TextAppearance.AppCompat">
+        <item name="android:textColor">@color/white</item>
+    </style>
 </resources>

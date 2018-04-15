@@ -11,6 +11,10 @@
             android:title="@string/nav_festival"
             android:icon="@drawable/ic_festival"/>
         <item
+            android:id="@+id/nav_event"
+            android:title="@string/nav_event"
+            android:icon="@drawable/ic_event"/>
+        <item
             android:id="@+id/nav_notification"
             android:title="@string/nav_notifications"
             android:icon="@drawable/ic_alarm"/>

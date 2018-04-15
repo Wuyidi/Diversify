@@ -1,6 +1,7 @@
 package com.techhawk.diversify.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -21,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.techhawk.diversify.R;
+import com.techhawk.diversify.fragment.EventFragment;
 import com.techhawk.diversify.fragment.FestivalFragment;
 import com.techhawk.diversify.fragment.HomeFragment;
 import com.techhawk.diversify.fragment.NotificationFragment;
@@ -46,6 +48,7 @@ public class MainActivity extends BaseActivity {
     private static final String TAG_FESTIVAL = "festival";
     private static final String TAG_SETTINGS = "settings";
     private static final String TAG_NOTIFICATIONS = "notifications";
+    private static final String TAG_EVENT = "event";
     public static String CURRENT_TAG = TAG_HOME;
     // toolbar titles respected to selected nav menu item
     private String[] activityTitles;
@@ -61,6 +64,7 @@ public class MainActivity extends BaseActivity {
         // Get reference from activity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -95,7 +99,7 @@ public class MainActivity extends BaseActivity {
                 .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL))
                 .into(imgNavHeaderBg);
         // showing dot next to notifications label
-        navigationView.getMenu().getItem(2).setActionView(R.layout.menu_dot);
+        navigationView.getMenu().getItem(3).setActionView(R.layout.menu_dot);
 
     }
 
@@ -116,12 +120,16 @@ public class MainActivity extends BaseActivity {
                         navItemIndex = 1;
                         CURRENT_TAG = TAG_FESTIVAL;
                         break;
-                    case R.id.nav_notification:
+                    case R.id.nav_event:
                         navItemIndex = 2;
+                        CURRENT_TAG = TAG_EVENT;
+                        break;
+                    case R.id.nav_notification:
+                        navItemIndex = 3;
                         CURRENT_TAG = TAG_NOTIFICATIONS;
                         break;
                     case R.id.nav_setting:
-                        navItemIndex = 3;
+                        navItemIndex = 4;
                         CURRENT_TAG = TAG_SETTINGS;
                         break;
                     case R.id.nav_about:
@@ -211,10 +219,14 @@ public class MainActivity extends BaseActivity {
                 Fragment festivalFragment = new FestivalFragment();
                 return festivalFragment;
             case 2:
+                // event
+                Fragment eventFragment = new EventFragment();
+                return eventFragment;
+            case 3:
                 // notifications
                 Fragment notificationFragment = new NotificationFragment();
                 return notificationFragment;
-            case 3:
+            case 4:
                 // settings
                 Fragment settingFragment = new SettingFragment();
                 return settingFragment;
@@ -259,7 +271,7 @@ public class MainActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         // when fragment is notifications, load the menu created for notifications
-        if (navItemIndex == 2) {
+        if (navItemIndex == 3) {
             getMenuInflater().inflate(R.menu.notifications, menu);
         }
         return true;

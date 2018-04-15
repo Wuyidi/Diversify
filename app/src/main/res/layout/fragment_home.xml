@@ -4,10 +4,6 @@
     android:layout_height="match_parent"
     tools:context="com.techhawk.diversify.fragment.HomeFragment">
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/img_home_bg"
-        android:layout_width="match_parent"
-        android:layout_height="405dp"
-        android:src="@drawable/diversity" />
+
 
 </FrameLayout>
