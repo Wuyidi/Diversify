@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.design.widget.NavigationView;
@@ -14,6 +15,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
@@ -40,7 +43,8 @@ public class MainActivity extends BaseActivity {
     private ImageView imgNavHeaderBg;
     private Toolbar toolbar;
     // urls to load navigation header background image
-    private static final String urlNavHeaderBg = "https://api.androidhive.info/images/nav-menu-header-bg.jpg";
+    // private static final String urlNavHeaderBg = "https://api.androidhive.info/images/nav-menu-header-bg.jpg";
+    private static final String urlNavHeaderBg = "https://3esi-enersight.com/wp-content/uploads/2017/06/3esi-Enersight-Energy-Navigator-Reserves-Management-Solution-Header-background-desktop.jpg";
     // index to identify current nav menu item
     public static int navItemIndex = 0;
     // tags used to attach the fragments
@@ -65,6 +69,7 @@ public class MainActivity extends BaseActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
+
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -242,6 +247,8 @@ public class MainActivity extends BaseActivity {
     private void selectNavMenu() {
         navigationView.getMenu().getItem(navItemIndex).setChecked(true);
     }
+
+
 
 
 

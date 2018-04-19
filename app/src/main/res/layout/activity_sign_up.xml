@@ -9,7 +9,7 @@
 
     <LinearLayout
         style="@style/FirebaseUI.WrapperStyle"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         android:orientation="vertical">
 
         <android.support.design.widget.TextInputLayout
@@ -62,12 +62,33 @@
 
 
         <Button
-            android:id="@+id/button_create"
-            style="@style/FirebaseUI.Button"
-            android:background="@color/colorAccentBlack"
-            android:text="@string/fui_button_text_save"
-            tools:ignore="RtlHardcoded" />
+            android:id="@+id/btn_register"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/sign_up_button"
+            android:text="@string/btn_sign_up"
+            android:textColor="@android:color/black"
+            android:textSize="17sp" />
+        <Button
+            android:id="@+id/btn_sign_in"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dip"
+            android:background="@null"
+            android:text="@string/btn_link_to_login"
+            android:textAllCaps="false"
+            android:textColor="@android:color/black"
+            android:textSize="15dp" />
+        <ProgressBar
+            android:id="@+id/signUp_progressBar"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center|bottom"
+            android:visibility="gone" />
 
     </LinearLayout>
+
 
 </ScrollView>

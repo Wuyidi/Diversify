@@ -12,4 +12,13 @@
     <color name="colorPrimaryBlackDark">#1b1b1b</color>
     <color name="colorAccentBlack">#6d6d6d</color>
 
+    <color name="textViewBackground">#59e5e5e5</color>
+
+    <!-- button -->
+    <color name="button_color">#15a9a1</color>
+    <color name="button_text">#F2F3D9</color>
+    <color name="button_color_pressed">#446789</color>
+
+    <!-- Toast -->
+    <color name="toast_color">#b2c0e5</color>
 </resources>

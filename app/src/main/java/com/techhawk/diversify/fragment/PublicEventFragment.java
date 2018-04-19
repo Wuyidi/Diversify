@@ -1,6 +1,7 @@
 package com.techhawk.diversify.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -22,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.techhawk.diversify.R;
+import com.techhawk.diversify.activity.ViewPublicEventActivity;
 import com.techhawk.diversify.model.Event;
 import com.techhawk.diversify.viewholder.PublicEventViewHolder;
 import com.twiceyuan.dropdownmenu.ArrayDropdownAdapter;
@@ -97,12 +99,14 @@ public class PublicEventFragment extends BaseFragment {
 
         adapter = new FirebaseRecyclerAdapter<Event, PublicEventViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull PublicEventViewHolder holder, int position, @NonNull Event model) {
+            protected void onBindViewHolder(@NonNull PublicEventViewHolder holder, int position, @NonNull final Event model) {
                 holder.bindToEvent(model,getContext());
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        Intent intent = new Intent(getActivity(), ViewPublicEventActivity.class);
+                        intent.putExtra("event", model);
+                        startActivity(intent);
                     }
                 });
             }

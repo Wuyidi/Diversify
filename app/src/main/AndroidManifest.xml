@@ -19,15 +19,14 @@
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".activity.AboutUsActivity"
             android:label="@string/activity_title_about_us" />
         <activity android:name=".activity.ViewFestivalActivity" />
         <activity
             android:name=".activity.AuthMethodPickerActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -37,7 +36,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SignUpActivity"></activity>
+        <activity android:name=".activity.SignUpActivity" />
+        <activity android:name=".activity.ViewPublicEventActivity"></activity>
     </application>
 
 </manifest>

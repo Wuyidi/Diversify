@@ -16,13 +16,16 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:padding="@dimen/activity_horizontal_margin">
+        android:layout_height="150dp">
 
         <TextView
             android:id="@+id/event_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/textViewBackground"
+            android:padding="16dp"
             android:text="Title"
             android:textColor="@color/white"
             android:textSize="24sp" />
@@ -34,6 +37,8 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:text="description"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
             android:textColor="@color/white"
             android:textSize="18sp" />
 

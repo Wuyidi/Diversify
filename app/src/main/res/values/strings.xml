@@ -45,5 +45,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- Welcome page title -->
+    <string name="welcome_page_title">Welcome to Diversify</string>
+    <string name="welcome_page_content">The best application for international student</string>
+    
+    <!-- Register page -->
+    <string name="btn_sign_up">Register</string>
+    <string name="btn_link_to_login">Already registered. Login Me!</string>
+
 
 </resources>
