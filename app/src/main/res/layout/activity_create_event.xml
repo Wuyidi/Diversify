@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.techhawk.diversify.activity.CreateEventActivity"
+    android:padding="16dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/create_event_title"
+                android:text="@string/register_my_event"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/create_event_content"
+                android:text="@string/register_my_event_content"/>
+            <TextView
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/event_detail"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_marginLeft="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/event_title"
+                android:textStyle="bold"
+                android:textSize="@dimen/create_event_subtitle"/>
+            <EditText
+                android:id="@+id/event_name"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/create_event_content"
+                android:hint="@string/event_title"/>
+            <TextView
+                android:layout_marginLeft="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="@dimen/create_event_subtitle"
+                android:textStyle="bold"
+                android:text="@string/event_location"/>
+            <EditText
+                android:id="@+id/event_location"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/create_event_content"
+                android:hint="Location"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:textStyle="bold"
+                android:textSize="@dimen/create_event_subtitle"
+                android:text="@string/Event_description"/>
+            <EditText
+                android:id="@+id/event_description"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:lines="5"
+                android:minLines="2"
+                android:maxLines="6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/create_event_content"
+                android:hint="Short description"
+                android:scrollHorizontally="false"
+                android:inputType="textMultiLine"
+                android:scrollbars="vertical"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:textStyle="bold"
+                android:textSize="@dimen/create_event_subtitle"
+                android:text="@string/event_date"/>
+
+            <DatePicker
+                android:id="@+id/event_date"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </DatePicker>
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save"
+                android:background="@drawable/sign_up_button"/>
+
+
+
+        </LinearLayout>
+    </ScrollView>
+</android.support.v7.widget.LinearLayoutCompat>

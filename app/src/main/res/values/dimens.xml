@@ -10,4 +10,7 @@
     <dimen name="festival_history_text_size">18sp</dimen>
     <dimen name="text_size_small">17sp</dimen>
     <dimen name="event_comments_text_size">20sp</dimen>
+    <dimen name="create_event_title">18sp</dimen>
+    <dimen name="create_event_content">16sp</dimen>
+    <dimen name="create_event_subtitle">16sp</dimen>
 </resources>

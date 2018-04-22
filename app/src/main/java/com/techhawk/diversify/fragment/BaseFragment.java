@@ -3,6 +3,8 @@ package com.techhawk.diversify.fragment;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.techhawk.diversify.R;
@@ -61,5 +63,14 @@ public class BaseFragment extends Fragment {
                 hideProgressDialog();
             }
         }.execute();
+    }
+
+    // Show a feedback
+    public void feedback(String msg) {
+        Toast toast = Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT);
+        View v = toast.getView();
+        v.setBackgroundResource(R.drawable.custom_toast);
+        toast.setView(v);
+        toast.show();
     }
 }

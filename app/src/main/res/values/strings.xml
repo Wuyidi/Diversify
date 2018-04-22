@@ -48,7 +48,7 @@
     <!-- Welcome page title -->
     <string name="welcome_page_title">Welcome to Diversify</string>
     <string name="welcome_page_content">The best application for international student</string>
-    
+
     <!-- Register page -->
     <string name="btn_sign_up">Register</string>
     <string name="btn_link_to_login">Already registered. Login Me!</string>
@@ -68,7 +68,14 @@
     <string name="facebook_app_id">367174447117675</string>
     <string name="fb_login_protocol_scheme">fb367174447117675</string>
 
-
+    <!-- create event page -->
+    <string name="register_my_event">Register my event</string>
+    <string name="event_detail">Event details</string>
+    <string name="event_title">Event title</string>
+    <string name="event_location">Location(Enter the address)</string>
+    <string name="event_date">Event date</string>
+    <string name="Event_description">Event description</string>
+    <string name="register_my_event_content">To register your event on the Diversify please complete the form below:</string>
 
 
 
