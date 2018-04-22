@@ -17,16 +17,18 @@ public class Holiday implements Parcelable {
     private String comments;
     private String history;
     private String name;
+    private String date;
 
     public Holiday() {
     }
 
-    public Holiday(String imgUrl, String type, String comments, String history, String name) {
+    public Holiday(String imgUrl, String type, String comments, String history, String name, String date) {
         this.imgUrl = imgUrl;
         this.type = type;
         this.comments = comments;
         this.history = history;
         this.name = name;
+        this.date = date;
     }
 
     public String getImgUrl() {
@@ -69,7 +71,15 @@ public class Holiday implements Parcelable {
         this.name = name;
     }
 
-    // Implement parcelable
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -82,6 +92,7 @@ public class Holiday implements Parcelable {
         dest.writeString(this.comments);
         dest.writeString(this.history);
         dest.writeString(this.name);
+        dest.writeString(this.date);
     }
 
     protected Holiday(Parcel in) {
@@ -90,9 +101,10 @@ public class Holiday implements Parcelable {
         this.comments = in.readString();
         this.history = in.readString();
         this.name = in.readString();
+        this.date = in.readString();
     }
 
-    public static final Parcelable.Creator<Holiday> CREATOR = new Parcelable.Creator<Holiday>() {
+    public static final Creator<Holiday> CREATOR = new Creator<Holiday>() {
         @Override
         public Holiday createFromParcel(Parcel source) {
             return new Holiday(source);

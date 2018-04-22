@@ -1,9 +1,14 @@
 package com.techhawk.diversify.activity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,7 +20,7 @@ import com.techhawk.diversify.model.Event;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
-public class ViewPublicEventActivity extends AppCompatActivity {
+public class ViewPublicEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     // Instance variable
     private Event event;
@@ -67,8 +72,31 @@ public class ViewPublicEventActivity extends AppCompatActivity {
             // finish the activity
             onBackPressed();
             return true;
+        } else if (id == R.id.calendar) {
+            String date = event.getDate();
+            String[] dateParts = date.split("-");
+            int day = Integer.parseInt(dateParts[0]);
+            int month = Integer.parseInt(dateParts[1]);
+            int year = Integer.parseInt(dateParts[2]);
+            DatePickerDialog dialog = new DatePickerDialog(ViewPublicEventActivity.this,this ,year,month,day);
+            dialog.show();
+            dialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setVisibility(View.GONE);
+            dialog.setCancelable(true);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.calendar_view, menu);
+        return  true;
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+
     }
 }

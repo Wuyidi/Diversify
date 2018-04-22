@@ -29,7 +29,7 @@ public class CustomEventViewHolder extends RecyclerView.ViewHolder {
     // bind button and text view to CustomEvent
     public void bindToCustomEvent(CustomEvent event, View.OnClickListener clickListener) {
         title.setText(event.getName());
-        desc.setText(event.getDescription());
+        desc.setText(event.getDate());
         deleteButton.setOnClickListener(clickListener);
     }
 
