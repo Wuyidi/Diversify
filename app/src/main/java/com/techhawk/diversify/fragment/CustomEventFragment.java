@@ -70,6 +70,8 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
         signInButton = rootView.findViewById(R.id.btn_sign_in);
         emptyView = rootView.findViewById(R.id.empty_event);
         noticeView = rootView.findViewById(R.id.login_notice);
+        eventView = rootView.findViewById(R.id.event_list_view);
+        eventView.setHasFixedSize(true);
 
 
         auth = FirebaseAuth.getInstance();
@@ -101,6 +103,16 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
                         }
                     }, 300);
                     noticeView.setVisibility(View.GONE);
+                    // Get reference from database
+                    eventRef = FirebaseDatabase.getInstance().getReference().child("users/"+getUid()+"/events");
+                    // Set up Layout Manager, reverse layout
+                    manager = new LinearLayoutManager(getActivity());
+                    manager.setReverseLayout(false);
+                    manager.setStackFromEnd(false);
+                    eventView.setLayoutManager(manager);
+
+                    setUpAdapter();
+                    eventView.setAdapter(adapter);
                 }
             }
         };
@@ -108,18 +120,7 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
         signInButton.setOnClickListener(this);
         createButton.setOnClickListener(this);
 
-        eventRef = FirebaseDatabase.getInstance().getReference().child("users/"+getUid()+"/events");
-        // Get reference from database
-        eventView = rootView.findViewById(R.id.event_list_view);
-        eventView.setHasFixedSize(true);
-        // Set up Layout Manager, reverse layout
-        manager = new LinearLayoutManager(getActivity());
-        manager.setReverseLayout(false);
-        manager.setStackFromEnd(false);
-        eventView.setLayoutManager(manager);
 
-        setUpAdapter();
-        eventView.setAdapter(adapter);
         return  rootView;
     }
 
