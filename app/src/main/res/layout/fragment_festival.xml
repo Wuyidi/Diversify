@@ -74,13 +74,15 @@
             android:textSize="32dp"
             android:visibility="gone"/>
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/festival_list_view"
             android:layout_width="match_parent"
-            android:layout_height="447dp"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:padding="5dp"
             android:scrollbars="vertical"
             tools:listitem="@layout/list_festival_item"
-            ></ListView>
+            />
 
 
     </LinearLayout>

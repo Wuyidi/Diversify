@@ -36,6 +36,6 @@ public abstract class EventViewHolder extends RecyclerView.ViewHolder {
 
     // Bind text and image to event
     public abstract void bindToEvent(Event event, Context context);
-
+    
 
 }

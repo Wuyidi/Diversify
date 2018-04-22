@@ -12,7 +12,7 @@
     <color name="colorPrimaryBlackDark">#1b1b1b</color>
     <color name="colorAccentBlack">#6d6d6d</color>
 
-    <color name="textViewBackground">#59e5e5e5</color>
+    <color name="textViewBackground">#4D000000</color>
 
     <!-- button -->
     <color name="button_color">#15a9a1</color>
@@ -21,4 +21,12 @@
 
     <!-- Toast -->
     <color name="toast_color">#b2c0e5</color>
+
+    <!-- Sign out -->
+    <color name="sign_out_button">#ff5c3e</color>
+    <color name="sign_out_button_pressed">#922b00</color>
+
+    <color name="text_shadow">#7F000000</color>
+    <color name="text_shadow_white">#FFFFFF</color>
+
 </resources>

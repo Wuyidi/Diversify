@@ -26,7 +26,7 @@
         <activity android:name=".activity.ViewFestivalActivity" />
         <activity
             android:name=".activity.AuthMethodPickerActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.Dark" />
         <activity
             android:name=".activity.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">

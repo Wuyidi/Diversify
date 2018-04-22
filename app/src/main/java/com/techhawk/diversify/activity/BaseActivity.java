@@ -1,7 +1,10 @@
 package com.techhawk.diversify.activity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -12,6 +15,33 @@ import com.techhawk.diversify.R;
  */
 
 public class BaseActivity extends AppCompatActivity {
+    public ProgressDialog mProgressDialog;
+
+
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    public void hideKeyboard(View view) {
+        final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+
     // Get current user ID from Firebase
     public String getUid() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -26,4 +56,12 @@ public class BaseActivity extends AppCompatActivity {
         toast.setView(v);
         toast.show();
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideProgressDialog();
+    }
+
+
 }

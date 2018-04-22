@@ -3,11 +3,15 @@ package com.techhawk.diversify.fragment;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,12 +26,15 @@ import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListOptions;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.techhawk.diversify.R;
 import com.techhawk.diversify.activity.ViewFestivalActivity;
 import com.techhawk.diversify.model.Holiday;
+import com.techhawk.diversify.viewholder.FestivalViewHolder;
 import com.twiceyuan.dropdownmenu.ArrayDropdownAdapter;
 import com.twiceyuan.dropdownmenu.DropdownMenu;
 import com.twiceyuan.dropdownmenu.MenuManager;
@@ -36,11 +43,10 @@ import com.twiceyuan.dropdownmenu.OnDropdownItemClickListener;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FestivalFragment extends BaseFragment implements AdapterView.OnItemClickListener {
+public class FestivalFragment extends BaseFragment{
 
     // Instance variables
     private SearchView searchView;
-    private ListView festivalView;
     private DatabaseReference festivalRef;
     // list used to inflate adapter
     private final String[] TYPES = new String[] {"All","National","Regional", "Not Public"};
@@ -50,6 +56,12 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
     private static final int TAG_REGIONAL = 2;
     private static final int TAG_PUBLIC = 3;
     private static int CURRENT_TAG = TAG_ALL;
+
+    private FirebaseRecyclerAdapter<Holiday, FestivalViewHolder> recyclerAdapter;
+    private LinearLayoutManager manager;
+    private RecyclerView festivalView;
+
+    private TextView emptyView;
 
     public FestivalFragment() {
         // Required empty public constructor
@@ -63,39 +75,51 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_festival, container, false);
         festivalView = rootView.findViewById(R.id.festival_list_view);
+        festivalView.setHasFixedSize(true);
+        // Set up Layout Manager, reverse layout
+        manager = new LinearLayoutManager(getActivity());
+        manager.setReverseLayout(false);
+        manager.setStackFromEnd(false);
+
+        festivalView.setLayoutManager(manager);
         // Set countries filter
         final DropdownMenu category = (DropdownMenu) rootView.findViewById(R.id.dm_dropdown);
         category.setAdapter(new ArrayDropdownAdapter(getContext(),R.layout.dropdown_light_item_oneline,TYPES));
         category.getListView().setDivider(ContextCompat.getDrawable(getContext(),R.drawable.inset_divider));
         category.getListView().setDividerHeight(1);
 
-        initListView();
+        // Get database reference
+        festivalRef = FirebaseDatabase.getInstance().getReference().child("holidays");
+
+        loading();
+        setUpAdapter(festivalRef);
+        festivalView.setAdapter(recyclerAdapter);
 
         category.setOnItemClickListener(new OnDropdownItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 CURRENT_TAG = i;
                 if (CURRENT_TAG == 0) {
-                    initListView();
+                    setUpAdapter(festivalRef);
+                    festivalView.setAdapter(recyclerAdapter);
+
                 } else {
-                    setUpListView();
+
+                    Query query = festivalRef.orderByChild("type").equalTo(TYPES[CURRENT_TAG]);
+                    setUpAdapter(query);
+                    festivalView.setAdapter(recyclerAdapter);
+
                 }
             }
         });
-        festivalView.setEmptyView(rootView.findViewById(R.id.empty_festival));
-        festivalView.setOnItemClickListener(this);
+        emptyView = rootView.findViewById(R.id.empty_festival);
+
+
 //        MenuManager.group(category,typeMenu);
         return rootView;
     }
 
-    private void initListView() {
-        // Connect to Firebase database
-        festivalRef = FirebaseDatabase.getInstance().getReference().child("holidays");
-        // Set up firebase list adapter
-        Query query = festivalRef;
-        FirebaseListAdapter<Holiday> adapter = initialFirebaseAdapter(query);
-        festivalView.setAdapter(adapter);
-    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -125,8 +149,8 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
                         .startAt(newText)
                         .endAt(String.valueOf(newText) + "\uf8ff");
 
-                FirebaseListAdapter adapter = initialFirebaseAdapter(query);
-                festivalView.setAdapter(adapter);
+                setUpAdapter(query);
+                festivalView.setAdapter(recyclerAdapter);
 
                 return true;
             }
@@ -149,47 +173,44 @@ public class FestivalFragment extends BaseFragment implements AdapterView.OnItem
 
     }
 
-    // Set up list view
-    private void setUpListView() {
-        // Connect to Firebase database
-        festivalRef = FirebaseDatabase.getInstance().getReference().child("holidays");
-        // Set up FirebaseListAdapter
-        Query query = festivalRef.orderByChild("type").equalTo(TYPES[CURRENT_TAG]);
-        FirebaseListOptions<Holiday> options = new FirebaseListOptions.Builder<Holiday>()
-                .setQuery(query, Holiday.class).setLayout(R.layout.list_festival_item).setLifecycleOwner(this).build();
-        FirebaseListAdapter<Holiday> adapter = new FirebaseListAdapter<Holiday>(options) {
+
+
+    private void setUpAdapter(Query query) {
+
+        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Holiday>()
+                .setQuery(query, Holiday.class)
+                .setLifecycleOwner(this)
+                .build();
+
+        recyclerAdapter = new FirebaseRecyclerAdapter<Holiday, FestivalViewHolder>(options) {
             @Override
-            protected void populateView(View v, Holiday holiday, int position) {
-                ((TextView) v.findViewById(R.id.list_festival_name)).setText(holiday.getName());
-                ((TextView) v.findViewById(R.id.list_festival_comments)).setText(holiday.getComments());
+            protected void onBindViewHolder(@NonNull FestivalViewHolder holder, int position, @NonNull final Holiday model) {
+                holder.bindToFestival(model,getContext());
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), ViewFestivalActivity.class);
+                        intent.putExtra("festival", model);
+                        startActivity(intent);
+                    }
+                });
+            }
+
+            @Override
+            public FestivalViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_festival_item,parent,false);
+                return new FestivalViewHolder(view);
+            }
+
+            @Override
+            public void onDataChanged() {
+                emptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
             }
         };
-
-        festivalView.setAdapter(adapter);
     }
 
 
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        ListView listView = (ListView) adapterView;
-        Holiday holiday = (Holiday) listView.getItemAtPosition(i);
-        Intent intent = new Intent(getActivity(), ViewFestivalActivity.class);
-        intent.putExtra("festival", holiday);
-        startActivity(intent);
-    }
-
-    private FirebaseListAdapter initialFirebaseAdapter(Query query) {
-        FirebaseListOptions<Holiday> options = new FirebaseListOptions.Builder<Holiday>()
-                .setQuery(query, Holiday.class).setLayout(R.layout.list_festival_item).setLifecycleOwner(this).build();
-        FirebaseListAdapter<Holiday> adapter = new FirebaseListAdapter<Holiday>(options) {
-            @Override
-            protected void populateView(View v, Holiday holiday, int position) {
-                ((TextView) v.findViewById(R.id.list_festival_name)).setText(holiday.getName());
-                ((TextView) v.findViewById(R.id.list_festival_comments)).setText(holiday.getComments());
-            }
-        };
-        return adapter;
-    }
 
 }

@@ -28,7 +28,11 @@
             android:padding="16dp"
             android:text="Title"
             android:textColor="@color/white"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2" />
 
         <TextView
             android:id="@+id/event_month"
@@ -40,7 +44,11 @@
             android:layout_marginLeft="16dp"
             android:layout_marginBottom="16dp"
             android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2" />
 
 
     </RelativeLayout>

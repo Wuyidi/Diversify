@@ -17,7 +17,7 @@ import com.techhawk.diversify.adapter.EventPagerAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EventFragment extends Fragment {
+public class EventFragment extends BaseFragment {
 
     // Instance variable
     private TabLayout tabLayout;

@@ -76,6 +76,7 @@ public class PublicEventFragment extends BaseFragment {
         manager.setReverseLayout(false);
         manager.setStackFromEnd(false);
         eventView.setLayoutManager(manager);
+        loading();
         setUpAdapter("VIC");
         eventView.setAdapter(adapter);
         regionMenu.setOnItemClickListener(new OnDropdownItemClickListener() {

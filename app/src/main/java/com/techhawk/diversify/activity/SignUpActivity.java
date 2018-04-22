@@ -31,7 +31,7 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
     private Button signInBtn;
     private FirebaseAuth auth;
     private DatabaseReference ref;
-    private ProgressBar progressBar;
+//    private ProgressBar progressBar;
 
 
     @Override
@@ -49,7 +49,7 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
         inputEmail = findViewById(R.id.email);
         inputName = findViewById(R.id.name);
         inputPassword = findViewById(R.id.password);
-        progressBar = findViewById(R.id.signUp_progressBar);
+//        progressBar = findViewById(R.id.signUp_progressBar);
         signInBtn = findViewById(R.id.btn_sign_in);
 
         registerBtn.setOnClickListener(this);
@@ -73,7 +73,7 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
 
     // Create a new user
     private void onAuthSuccess(FirebaseUser user) {
-        String name = inputEmail.getText().toString().trim();
+        String name = inputName.getText().toString().trim();
         if (TextUtils.isEmpty(name)) {
             name = usernameFromEmail(user.getEmail());
         }
@@ -83,43 +83,75 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == registerBtn.getId()) {
-            String email = inputEmail.getText().toString().trim();
-            String password = inputPassword.getText().toString().trim();
-            // Validate user input
-            if (TextUtils.isEmpty(email)) {
-                inputEmail.setError("Required");
-                return;
-            }
-
-            if (TextUtils.isEmpty(password)) {
-                inputPassword.setError("Required");
-                return;
-            }
-            progressBar.setVisibility(View.VISIBLE);
-            auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            feedback("createUserWithEmail:onComplete: " + task.isSuccessful());
-                            progressBar.setVisibility(View.GONE);
-                            if (!task.isSuccessful()) {
-                                feedback("Authentication failed. " + task.getException());
-                            } else {
-                                onAuthSuccess(task.getResult().getUser());
-                                startActivity(new Intent(SignUpActivity.this, AuthMethodPickerActivity.class));
-                                finish();
-                            }
-
-                        }
-                    });
+        switch (view.getId()){
+            case R.id.btn_register:
+                signUp(inputEmail.getText().toString().trim(), inputPassword.getText().toString().trim());
+                break;
+            case R.id.btn_sign_in:
+                finish();
+                break;
+            default:
+                break;
         }
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        progressBar.setVisibility(View.GONE);
+
+
+    private void signUp(String email, String password) {
+        if (!validateForm()) {
+            return;
+        }
+        showProgressDialog();
+
+        auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        feedback("Join in successfully!");
+                        hideProgressDialog();
+                        if (!task.isSuccessful()) {
+                            feedback("Authentication failed. " + task.getException());
+                        } else {
+                            onAuthSuccess(task.getResult().getUser());
+                            startActivity(new Intent(SignUpActivity.this, AuthMethodPickerActivity.class));
+                            finish();
+                        }
+
+                    }
+                });
     }
+
+
+    private boolean validateForm() {
+        boolean valid = true;
+
+        String email = inputEmail.getText().toString().trim();
+        String password = inputPassword.getText().toString().trim();
+        // Validate user input
+        if (TextUtils.isEmpty(email)) {
+            inputEmail.setError("Required");
+            valid = false;
+        } else {
+            inputEmail.setError(null);
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            inputPassword.setError("Required");
+            valid = false;
+        } else {
+            inputPassword.setError(null);
+        }
+
+        if (password.length() < 6) {
+            inputPassword.setError("More than 6 letters.");
+            valid = false;
+        } else {
+            inputPassword.setError(null);
+        }
+
+        return valid;
+
+    }
+
 }
