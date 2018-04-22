@@ -95,21 +95,40 @@
 
     </android.support.v7.widget.LinearLayoutCompat>
 
-    <include
-        layout="@layout/fui_idp_button_facebook"
+    <com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton
+
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/facebook_button"
+        style="@style/FirebaseUI.Button.AccountChooser.FacebookButton"
+        android:text="@string/fui_sign_in_with_facebook"
+        tools:ignore="UnusedIds"
         android:layout_width="@dimen/fui_auth_method_button_width"
         android:layout_height="wrap_content"
+
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/fui_auth_method_button_drawablePadding"
         android:layout_weight="0.5" />
 
-    <include
-        layout="@layout/fui_idp_button_google"
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/google_button"
+        style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
+        android:text="@string/fui_sign_in_with_google"
+        tools:ignore="UnusedIds"
         android:layout_width="@dimen/fui_auth_method_button_width"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/fui_auth_method_button_drawablePadding"
-        android:layout_weight="0.5" />
+        android:layout_weight="0.5"/>
+
 
 
     <Button

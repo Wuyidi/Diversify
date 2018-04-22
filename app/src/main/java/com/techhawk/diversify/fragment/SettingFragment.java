@@ -12,6 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.techhawk.diversify.R;
@@ -26,6 +31,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     private FirebaseAuth auth;
     private FirebaseUser user;
     private FirebaseAuth.AuthStateListener authStateListener;
+    private GoogleSignInClient mGoogleSignInClient;
 
 
     public SettingFragment() {
@@ -57,6 +63,14 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
             }
         };
 
+        // [START config_signin]
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        // [END config_signin]
+        mGoogleSignInClient = GoogleSignIn.getClient(this.getActivity(), gso);
 
 
         signOutButton.setOnClickListener(this);
@@ -74,6 +88,8 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 break;
             case R.id.btn_sign_out:
                 auth.signOut();
+                mGoogleSignInClient.signOut();
+                LoginManager.getInstance().logOut();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.detach(this).attach(this).commit();
                 break;

@@ -63,7 +63,13 @@
     <string name="new_email_hint">New Email</string>
     <string name="new_password_hint">New Password</string>
     <string name="btn_update">Update</string>
-    <string name="default_web_client_id">356275944260-5i9curoc0kr98upndgq0gtctejjukujo.apps.googleusercontent.com</string>
+
+    <!-- facebook login -->
+    <string name="facebook_app_id">367174447117675</string>
+    <string name="fb_login_protocol_scheme">fb367174447117675</string>
+
+
+
 
 
 </resources>
