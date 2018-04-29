@@ -7,28 +7,29 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.techhawk.diversify.R;
 import com.techhawk.diversify.model.CustomEvent;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
-public class CreateEventActivity extends BaseActivity implements View.OnClickListener{
+public class EditCustomEventActivity extends BaseActivity {
 
     private CustomEvent event;
     private DatabaseReference eventRef;
+    private DatabaseReference publicRef;
     private EditText inputName;
     private EditText inputLocation;
     private EditText inputDescription;
@@ -37,26 +38,63 @@ public class CreateEventActivity extends BaseActivity implements View.OnClickLis
     private Switch switchButton;
     private static final String ERROR = "Required";
     private boolean isPublic;
-
+    private String key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_event);
+        setContentView(R.layout.activity_edit_custom_event);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        eventRef = FirebaseDatabase.getInstance().getReference().child("users/"+getUid()+"/events");
         inputName = findViewById(R.id.event_name);
         inputLocation = findViewById(R.id.event_location);
         inputDescription = findViewById(R.id.event_description);
         inputDate = findViewById(R.id.event_date);
         saveButton = findViewById(R.id.btn_save);
         switchButton = findViewById(R.id.btn_switch);
-        saveButton.setOnClickListener(this);
 
+        key = getIntent().getStringExtra("event_key");
+        eventRef = FirebaseDatabase.getInstance().getReference().child("users/"+getUid()+"/events").child(key);
+        publicRef = FirebaseDatabase.getInstance().getReference().child("custom_events").child(key);
+        publicRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                event = dataSnapshot.getValue(CustomEvent.class);
+                if (event != null) {
+                    isPublic = true;
+                    setUI();
+                } else {
+                    eventRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            event = dataSnapshot.getValue(CustomEvent.class);
+                            isPublic = false;
+                            setUI();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                save();
+            }
+        });
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -72,14 +110,6 @@ public class CreateEventActivity extends BaseActivity implements View.OnClickLis
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == saveButton.getId()) {
-            save();
-        }
-
     }
 
     private boolean validForm() {
@@ -113,56 +143,17 @@ public class CreateEventActivity extends BaseActivity implements View.OnClickLis
         return  valid;
     }
 
-    private void createNewEvent(String name, String location, String date, String desc) {
-        showProgressDialog();
-        event = new CustomEvent();
-        event.setDate(date);
-        event.setName(name);
-        event.setDescription(desc);
-        event.setLocation(location);
-        event.setContact(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-
-        isPublic = switchButton.isChecked();
-
-        if (isPublic) {
-            DatabaseReference publicEventRef = FirebaseDatabase.getInstance().getReference().child("custom_events");
-            String key = eventRef.push().getKey();
-            eventRef.child(key).setValue(event, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                    if (databaseError != null) {
-                        feedback("Event couldn't be saved " + databaseError.getMessage());
-                    } else {
-                        feedback("Event saved successfully");
-                    }
-                    hideProgressDialog();
-                }
-            });
-            publicEventRef.child(key).setValue(event, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                    if (databaseError != null) {
-                        feedback("Event couldn't be saved " + databaseError.getMessage());
-                    } else {
-                        feedback("Event saved successfully");
-                    }
-                    hideProgressDialog();
-                }
-            });
-
-        } else {
-            eventRef.push().setValue(event, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                    if (databaseError != null) {
-                        feedback("Event couldn't be saved " + databaseError.getMessage());
-                    } else {
-                        feedback("Event saved successfully");
-                    }
-                    hideProgressDialog();
-                }
-            });
-        }
+    private void setUI() {
+        inputName.setText(event.getName(), TextView.BufferType.EDITABLE);
+        inputDescription.setText(event.getDescription(), TextView.BufferType.EDITABLE);
+        inputLocation.setText(event.getLocation(),TextView.BufferType.EDITABLE);
+        switchButton.setChecked(isPublic);
+        String date = event.getDate();
+        String[] dateParts = date.split("-");
+        int day = Integer.parseInt(dateParts[0]);
+        int month = (Integer.parseInt(dateParts[1])>0)? Integer.parseInt(dateParts[1])-1:0;
+        int year = Integer.parseInt(dateParts[2]);
+        inputDate.updateDate(year,month,day);
     }
 
     private void save() {
@@ -185,5 +176,56 @@ public class CreateEventActivity extends BaseActivity implements View.OnClickLis
             finish();
         }
     }
+    private void createNewEvent(String name, String location, String date, String desc) {
+        showProgressDialog();
+        event = new CustomEvent();
+        event.setDate(date);
+        event.setName(name);
+        event.setDescription(desc);
+        event.setLocation(location);
+        event.setContact(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
+        isPublic = switchButton.isChecked();
+
+        if (isPublic) {
+
+            eventRef.setValue(event, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError != null) {
+                        feedback("Event couldn't be saved " + databaseError.getMessage());
+                    } else {
+                        feedback("Event saved successfully");
+                    }
+                    hideProgressDialog();
+                }
+            });
+            publicRef.setValue(event, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError != null) {
+                        feedback("Event couldn't be saved " + databaseError.getMessage());
+                    } else {
+                        feedback("Event saved successfully");
+                    }
+                    hideProgressDialog();
+                }
+            });
+
+        } else {
+            eventRef.setValue(event, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError != null) {
+                        feedback("Event couldn't be saved " + databaseError.getMessage());
+                    } else {
+                        feedback("Event saved successfully");
+                    }
+                    hideProgressDialog();
+                }
+            });
+
+            publicRef.setValue(null);
+        }
+    }
 }

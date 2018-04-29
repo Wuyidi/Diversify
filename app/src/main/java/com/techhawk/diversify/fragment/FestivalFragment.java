@@ -91,7 +91,7 @@ public class FestivalFragment extends BaseFragment{
         // Get database reference
         festivalRef = FirebaseDatabase.getInstance().getReference().child("holidays");
 
-        loading();
+        loading(festivalView);
         setUpAdapter(festivalRef);
         festivalView.setAdapter(recyclerAdapter);
 

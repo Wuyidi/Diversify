@@ -16,6 +16,7 @@ public class CustomEvent implements Parcelable {
     private String location;
     private String date;
     private String description;
+    private String contact;
 
     public CustomEvent() {
     }
@@ -52,6 +53,14 @@ public class CustomEvent implements Parcelable {
         this.description = description;
     }
 
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
 
     @Override
     public int describeContents() {
@@ -64,6 +73,7 @@ public class CustomEvent implements Parcelable {
         dest.writeString(this.location);
         dest.writeString(this.date);
         dest.writeString(this.description);
+        dest.writeString(this.contact);
     }
 
     protected CustomEvent(Parcel in) {
@@ -71,9 +81,10 @@ public class CustomEvent implements Parcelable {
         this.location = in.readString();
         this.date = in.readString();
         this.description = in.readString();
+        this.contact = in.readString();
     }
 
-    public static final Parcelable.Creator<CustomEvent> CREATOR = new Parcelable.Creator<CustomEvent>() {
+    public static final Creator<CustomEvent> CREATOR = new Creator<CustomEvent>() {
         @Override
         public CustomEvent createFromParcel(Parcel source) {
             return new CustomEvent(source);

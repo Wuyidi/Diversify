@@ -31,6 +31,7 @@ import com.google.firebase.database.Query;
 import com.techhawk.diversify.R;
 import com.techhawk.diversify.activity.AuthMethodPickerActivity;
 import com.techhawk.diversify.activity.CreateEventActivity;
+import com.techhawk.diversify.activity.ViewCustomEventActivity;
 import com.techhawk.diversify.model.CustomEvent;
 import com.techhawk.diversify.model.Event;
 import com.techhawk.diversify.viewholder.CustomEventViewHolder;
@@ -56,8 +57,6 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
     private TextView noticeView;
     // Unique Identifier for receiving activity result
     public static final int ADD_EVENT_REQUEST = 1;
-
-    private View view;
     private DatabaseReference eventRef;
     private RecyclerView eventView;
     private LinearLayoutManager manager;
@@ -206,10 +205,19 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
         adapter = new FirebaseRecyclerAdapter<CustomEvent, CustomEventViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull final CustomEventViewHolder holder, final int position, @NonNull final CustomEvent model) {
+                final String key = this.getRef(position).getKey();
                 holder.bindToCustomEvent(model, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         buildDialog(model,holder.getAdapterPosition());
+                    }
+                });
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), ViewCustomEventActivity.class);
+                        intent.putExtra(ViewCustomEventActivity.EXTRA_EVENT_KEY,key);
+                        startActivity(intent);
                     }
                 });
             }
@@ -232,10 +240,19 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
         adapter2 = new FirebaseRecyclerAdapter<CustomEvent, PrivateEventViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull final PrivateEventViewHolder holder, final int position, @NonNull final CustomEvent model) {
+                final String key = this.getRef(position).getKey();
                 holder.bindToCustomEvent(model, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         buildDialog(model,holder.getAdapterPosition());
+                    }
+                });
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), ViewCustomEventActivity.class);
+                        intent.putExtra(ViewCustomEventActivity.EXTRA_EVENT_KEY,key);
+                        startActivity(intent);
                     }
                 });
             }

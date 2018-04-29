@@ -39,12 +39,13 @@ public class BaseFragment extends Fragment {
         }
     }
 
-    public void loading() {
+    public void loading(final View view) {
         new AsyncTask<Object, Void, Void>() {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
                 showProgressDialog();
+                view.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -61,6 +62,7 @@ public class BaseFragment extends Fragment {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 hideProgressDialog();
+                view.setVisibility(View.VISIBLE);
             }
         }.execute();
     }

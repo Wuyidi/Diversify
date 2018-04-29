@@ -9,7 +9,7 @@
 
     <!-- Toolbar titles when navigation menu is selected -->
     <string-array name="nav_item_activity_titles">
-        <item>Home</item>
+        <item>Upcoming Events</item>
         <item>Festival</item>
         <item>Event</item>
         <item>Notifications</item>
@@ -83,6 +83,7 @@
     <string name="Event_description">Event description</string>
     <string name="register_my_event_content">To register your event on the Diversify please complete the form below:</string>
 
+    <string name="refresh_btn">Refresh Your Recommendation</string>
 
 
 </resources>

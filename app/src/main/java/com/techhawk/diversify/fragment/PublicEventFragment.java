@@ -39,14 +39,13 @@ public class PublicEventFragment extends BaseFragment {
     private DatabaseReference eventRef;
     private RecyclerView eventView;
     private LinearLayoutManager manager;
-    private FirebaseRecyclerAdapter<Event,PublicEventViewHolder> adapter;
+    private FirebaseRecyclerAdapter<Event, PublicEventViewHolder> adapter;
     private TextView emptyView;
     // tags used to attach the filter
-    private static final  int TAG_VIC = 6;
+    private static final int TAG_VIC = 6;
     private static int CURRENT_TAG = TAG_VIC;
     // list used to inflate adapter
-    private static String[] REGIONS = new String[7];
-
+    private static String[] REGIONS = new String[8];
 
 
     public PublicEventFragment() {
@@ -62,8 +61,8 @@ public class PublicEventFragment extends BaseFragment {
         // Initialization
         REGIONS = getResources().getStringArray(R.array.dropdown_menu_region);
         final DropdownMenu regionMenu = rootView.findViewById(R.id.dm_dropdown);
-        regionMenu.setAdapter(new ArrayDropdownAdapter(getContext(),R.layout.dropdown_light_item_oneline,REGIONS));
-        regionMenu.getListView().setDivider(ContextCompat.getDrawable(getContext(),R.drawable.inset_divider));
+        regionMenu.setAdapter(new ArrayDropdownAdapter(getContext(), R.layout.dropdown_light_item_oneline, REGIONS));
+        regionMenu.getListView().setDivider(ContextCompat.getDrawable(getContext(), R.drawable.inset_divider));
         emptyView = rootView.findViewById(R.id.empty_event);
         regionMenu.getListView().setDividerHeight(1);
         // Connect to database
@@ -76,7 +75,7 @@ public class PublicEventFragment extends BaseFragment {
         manager.setReverseLayout(false);
         manager.setStackFromEnd(false);
         eventView.setLayoutManager(manager);
-        loading();
+        loading(eventView);
         setUpAdapter("VIC");
         eventView.setAdapter(adapter);
         regionMenu.setOnItemClickListener(new OnDropdownItemClickListener() {
@@ -101,7 +100,7 @@ public class PublicEventFragment extends BaseFragment {
         adapter = new FirebaseRecyclerAdapter<Event, PublicEventViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull PublicEventViewHolder holder, int position, @NonNull final Event model) {
-                holder.bindToEvent(model,getContext());
+                holder.bindToEvent(model, getContext());
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -115,7 +114,7 @@ public class PublicEventFragment extends BaseFragment {
             @Override
             public PublicEventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_public_event_item,parent,false);
+                        .inflate(R.layout.list_public_event_item, parent, false);
                 return new PublicEventViewHolder(view);
             }
 
@@ -127,7 +126,6 @@ public class PublicEventFragment extends BaseFragment {
             }
         };
     }
-
 
 
 }
