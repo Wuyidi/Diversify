@@ -27,13 +27,25 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/create_event_content"
                 android:text="@string/register_my_event_content"/>
+
             <TextView
-                android:layout_marginTop="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="@string/event_detail"
                 android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
+            <Switch
+                android:layout_marginTop="8dp"
+                android:id="@+id/btn_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Make it Public"
+                android:textColor="@color/colorAccentBlack"
+                android:textSize="@dimen/create_event_subtitle"
+                android:textStyle="bold"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"/>
             <TextView
                 android:layout_marginLeft="8dp"
                 android:layout_width="match_parent"
@@ -107,6 +119,8 @@
 
             </DatePicker>
 
+
+
             <Button
                 android:id="@+id/btn_save"
                 android:layout_marginTop="8dp"
@@ -118,5 +132,6 @@
 
 
         </LinearLayout>
+
     </ScrollView>
 </android.support.v7.widget.LinearLayoutCompat>

@@ -14,9 +14,9 @@ import com.techhawk.diversify.model.CustomEvent;
 
 public class CustomEventViewHolder extends RecyclerView.ViewHolder {
     // Instance variable
-    private TextView title;
-    private TextView desc;
-    private Button deleteButton;
+    protected TextView title;
+    protected TextView desc;
+    protected Button deleteButton;
 
     public CustomEventViewHolder(View itemView) {
         super(itemView);
@@ -24,6 +24,7 @@ public class CustomEventViewHolder extends RecyclerView.ViewHolder {
         title = itemView.findViewById(R.id.event_name);
         desc = itemView.findViewById(R.id.event_desc);
         deleteButton = itemView.findViewById(R.id.btn_delete);
+        deleteButton.setVisibility(View.GONE);
     }
 
     // bind button and text view to CustomEvent

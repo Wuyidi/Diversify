@@ -37,6 +37,7 @@ dependencies {
     implementation 'com.facebook.android:facebook-login:[4,5)'
     implementation 'com.firebaseui:firebase-ui-auth:3.2.2'
     compile 'com.applandeo:material-calendar-view:1.4.0'
+    compile 'com.google.android.gms:play-services-maps:11.8.0'
     testCompile 'junit:junit:4.12'
 }
 

@@ -53,6 +53,13 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             tools:replace="android:theme" />
         <activity android:name=".activity.CreateEventActivity"></activity>
+
+        <!-- Goolge Maps API Key -->
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyA3zjDSrng3Cp9ASaDUkp9lFnzAbx_Ku1c">
+
+        </meta-data>
     </application>
 
 </manifest>

@@ -19,6 +19,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.techhawk.diversify.R;
 import com.techhawk.diversify.model.Holiday;
 
+import java.time.Month;
 import java.util.Date;
 
 
@@ -64,9 +65,10 @@ public class ViewFestivalActivity extends AppCompatActivity implements DatePicke
             String date = festival.getDate();
             String[] dateParts = date.split("-");
             int day = Integer.parseInt(dateParts[0]);
-            int month = Integer.parseInt(dateParts[1]);
+            int month = (Integer.parseInt(dateParts[1])>0)? Integer.parseInt(dateParts[1])-1:0;
             int year = Integer.parseInt(dateParts[2]);
-            DatePickerDialog dialog = new DatePickerDialog(ViewFestivalActivity.this,this ,year,month,day);
+
+            DatePickerDialog dialog = new DatePickerDialog(ViewFestivalActivity.this,this ,year, month,day);
             dialog.show();
             dialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setVisibility(View.GONE);
             dialog.setCancelable(true);

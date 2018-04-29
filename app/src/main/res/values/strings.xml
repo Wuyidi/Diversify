@@ -28,6 +28,12 @@
         <item>WA</item>
     </string-array>
 
+    <!-- Dropdown menu type list -->
+    <string-array name="dropdown_munu_type">
+        <item>private</item>
+        <item>public</item>
+    </string-array>
+
 
     <!-- Activity titles -->
     <string name="activity_title_about_us">About Us</string>

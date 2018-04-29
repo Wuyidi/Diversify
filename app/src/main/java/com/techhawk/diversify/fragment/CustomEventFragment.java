@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,13 +15,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.firebase.ui.common.ChangeEventType;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -30,7 +34,11 @@ import com.techhawk.diversify.activity.CreateEventActivity;
 import com.techhawk.diversify.model.CustomEvent;
 import com.techhawk.diversify.model.Event;
 import com.techhawk.diversify.viewholder.CustomEventViewHolder;
+import com.techhawk.diversify.viewholder.PrivateEventViewHolder;
 import com.techhawk.diversify.viewholder.PublicEventViewHolder;
+import com.twiceyuan.dropdownmenu.ArrayDropdownAdapter;
+import com.twiceyuan.dropdownmenu.DropdownMenu;
+import com.twiceyuan.dropdownmenu.OnDropdownItemClickListener;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -49,12 +57,14 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
     // Unique Identifier for receiving activity result
     public static final int ADD_EVENT_REQUEST = 1;
 
+    private View view;
     private DatabaseReference eventRef;
-
     private RecyclerView eventView;
     private LinearLayoutManager manager;
     private FirebaseRecyclerAdapter<CustomEvent, CustomEventViewHolder> adapter;
-
+    private FirebaseRecyclerAdapter<CustomEvent, PrivateEventViewHolder> adapter2;
+    private static String[] TYPES = new String[2];
+    private static int CURRENT_TYPE = 0;
 
     public CustomEventFragment() {
         // Required empty public constructor
@@ -72,7 +82,11 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
         noticeView = rootView.findViewById(R.id.login_notice);
         eventView = rootView.findViewById(R.id.event_list_view);
         eventView.setHasFixedSize(true);
-
+        TYPES = getResources().getStringArray(R.array.dropdown_munu_type);
+        final DropdownMenu typeMenu = rootView.findViewById(R.id.dm_dropdown);
+        typeMenu.setAdapter(new ArrayDropdownAdapter(getContext(),R.layout.dropdown_light_item_oneline,TYPES));
+        typeMenu.getListView().setDivider(ContextCompat.getDrawable(getContext(),R.drawable.inset_divider));
+        typeMenu.getListView().setDividerHeight(1);
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
@@ -110,9 +124,31 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
                     manager.setReverseLayout(false);
                     manager.setStackFromEnd(false);
                     eventView.setLayoutManager(manager);
+                    if (CURRENT_TYPE == 0) {
+                        setUpAdapter(eventRef);
+                        eventView.setAdapter(adapter2);
+                    } else {
+                        Query query = FirebaseDatabase.getInstance().getReference().child("custom_events");
+                        setUpAdapter(query);
+                        eventView.setAdapter(adapter);
+                    }
 
-                    setUpAdapter();
-                    eventView.setAdapter(adapter);
+                    typeMenu.setOnItemClickListener(new OnDropdownItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            CURRENT_TYPE = i;
+                            if (i == 0) {
+                                setUpAdapter(eventRef);
+                                eventView.setAdapter(adapter2);
+                            } else {
+                                Query query = FirebaseDatabase.getInstance().getReference().child("custom_events");
+                                setUpAdapter(query);
+                                eventView.setAdapter(adapter);
+
+                            }
+
+                        }
+                    });
                 }
             }
         };
@@ -155,14 +191,13 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_EVENT_REQUEST) {
             if (resultCode == RESULT_OK) {
-                feedback("Create Routine Successfully");
+                feedback("Create Event Successfully");
             }
         }
 
     }
 
-    private void setUpAdapter() {
-        Query query = eventRef;
+    private void setUpAdapter(Query query) {
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<CustomEvent>()
                 .setQuery(query, CustomEvent.class)
                 .setLifecycleOwner(this)
@@ -170,11 +205,11 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
 
         adapter = new FirebaseRecyclerAdapter<CustomEvent, CustomEventViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull CustomEventViewHolder holder, final int position, @NonNull final CustomEvent model) {
+            protected void onBindViewHolder(@NonNull final CustomEventViewHolder holder, final int position, @NonNull final CustomEvent model) {
                 holder.bindToCustomEvent(model, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        buildDialog(model,position);
+                        buildDialog(model,holder.getAdapterPosition());
                     }
                 });
             }
@@ -194,14 +229,48 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
             }
         };
 
+        adapter2 = new FirebaseRecyclerAdapter<CustomEvent, PrivateEventViewHolder>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull final PrivateEventViewHolder holder, final int position, @NonNull final CustomEvent model) {
+                holder.bindToCustomEvent(model, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        buildDialog(model,holder.getAdapterPosition());
+                    }
+                });
+            }
+
+            @Override
+            public PrivateEventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_custom_event_item,parent,false);
+                return new PrivateEventViewHolder(view);
+            }
+
+            @Override
+            public void onDataChanged() {
+                emptyView.setVisibility(
+                        adapter.getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE
+                );
+            }
+
+            @Override
+            public void onChildChanged(@NonNull ChangeEventType type, @NonNull DataSnapshot snapshot, int newIndex, int oldIndex) {
+                super.onChildChanged(type, snapshot, newIndex, oldIndex);
+            }
+        };
+
     }
 
-    // Delete a routine exercise from Firebase database
+    // Delete a event from Firebase database
     private void deleteData(int position) {
-        adapter.getRef(position).setValue(null);
-        String key = adapter.getRef(position).getKey();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users/"+getUid()+"/events/"+key);
-        ref.setValue(null);
+        String key = adapter2.getRef(position).getKey();
+        adapter2.getRef(position).removeValue();
+        DatabaseReference publicRef = FirebaseDatabase.getInstance().getReference().child("custom_events/"+key);
+        if (publicRef != null) {
+            publicRef.setValue(null);
+        }
+
     }
 
     // Build a dialog for deleting a event

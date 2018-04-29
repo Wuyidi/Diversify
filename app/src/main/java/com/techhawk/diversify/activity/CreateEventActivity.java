@@ -7,8 +7,10 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class CreateEventActivity extends BaseActivity implements View.OnClickListener {
+public class CreateEventActivity extends BaseActivity implements View.OnClickListener{
 
     private CustomEvent event;
     private DatabaseReference eventRef;
@@ -30,7 +32,9 @@ public class CreateEventActivity extends BaseActivity implements View.OnClickLis
     private EditText inputDescription;
     private DatePicker inputDate;
     private Button saveButton;
+    private Switch switchButton;
     private static final String ERROR = "Required";
+    private boolean isPublic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +42,16 @@ public class CreateEventActivity extends BaseActivity implements View.OnClickLis
         setContentView(R.layout.activity_create_event);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         eventRef = FirebaseDatabase.getInstance().getReference().child("users/"+getUid()+"/events");
         inputName = findViewById(R.id.event_name);
         inputLocation = findViewById(R.id.event_location);
         inputDescription = findViewById(R.id.event_description);
         inputDate = findViewById(R.id.event_date);
         saveButton = findViewById(R.id.btn_save);
+        switchButton = findViewById(R.id.btn_switch);
         saveButton.setOnClickListener(this);
+
 
     }
     @Override
@@ -111,18 +118,47 @@ public class CreateEventActivity extends BaseActivity implements View.OnClickLis
         event.setDescription(desc);
         event.setLocation(location);
 
-        eventRef.push().setValue(event, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    feedback("Routine couldn't be saved " + databaseError.getMessage());
-                } else {
-                    feedback("Routine saved successfully");
-                }
-                hideProgressDialog();
-            }
-        });
+        isPublic = switchButton.isChecked();
 
+        if (isPublic) {
+            DatabaseReference publicEventRef = FirebaseDatabase.getInstance().getReference().child("custom_events");
+            String key = eventRef.push().getKey();
+            eventRef.child(key).setValue(event, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError != null) {
+                        feedback("Event couldn't be saved " + databaseError.getMessage());
+                    } else {
+                        feedback("Event saved successfully");
+                    }
+                    hideProgressDialog();
+                }
+            });
+            publicEventRef.child(key).setValue(event, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError != null) {
+                        feedback("Event couldn't be saved " + databaseError.getMessage());
+                    } else {
+                        feedback("Event saved successfully");
+                    }
+                    hideProgressDialog();
+                }
+            });
+
+        } else {
+            eventRef.push().setValue(event, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError != null) {
+                        feedback("Event couldn't be saved " + databaseError.getMessage());
+                    } else {
+                        feedback("Event saved successfully");
+                    }
+                    hideProgressDialog();
+                }
+            });
+        }
     }
 
     private void save() {
@@ -145,4 +181,5 @@ public class CreateEventActivity extends BaseActivity implements View.OnClickLis
             finish();
         }
     }
+
 }

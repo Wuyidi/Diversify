@@ -76,7 +76,7 @@ public class ViewPublicEventActivity extends AppCompatActivity implements DatePi
             String date = event.getDate();
             String[] dateParts = date.split("-");
             int day = Integer.parseInt(dateParts[0]);
-            int month = Integer.parseInt(dateParts[1]);
+            int month = (Integer.parseInt(dateParts[1])>0)? Integer.parseInt(dateParts[1])-1:0;
             int year = Integer.parseInt(dateParts[2]);
             DatePickerDialog dialog = new DatePickerDialog(ViewPublicEventActivity.this,this ,year,month,day);
             dialog.show();

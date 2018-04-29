@@ -45,7 +45,7 @@ public class PublicEventFragment extends BaseFragment {
     private static final  int TAG_VIC = 6;
     private static int CURRENT_TAG = TAG_VIC;
     // list used to inflate adapter
-    private String[] REGIONS = new String[7];
+    private static String[] REGIONS = new String[7];
 
 
 

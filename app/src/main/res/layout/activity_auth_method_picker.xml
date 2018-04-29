@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/fui_auth_method_button_drawablePadding"
-        android:layout_weight="0.5">
+        >
 
     </include>
 
@@ -108,7 +108,8 @@
 
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/fui_auth_method_button_drawablePadding"
-        android:layout_weight="0.5" />
+        android:layout_weight="0.5"
+        android:visibility="gone"/>
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
@@ -126,8 +127,7 @@
         android:layout_width="@dimen/fui_auth_method_button_width"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/fui_auth_method_button_drawablePadding"
-        android:layout_weight="0.5"/>
+        android:layout_marginTop="@dimen/fui_auth_method_button_drawablePadding" />
 
 
 
