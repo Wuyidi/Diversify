@@ -68,6 +68,7 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
     // Write a new user to firebase
     private void createNewUser(String userId, String name) {
         User user = new User(name);
+        user.setImgUrl("");
         ref.child("users").child(userId).setValue(user);
     }
 

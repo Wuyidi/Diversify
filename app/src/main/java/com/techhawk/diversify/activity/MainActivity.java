@@ -2,12 +2,12 @@ package com.techhawk.diversify.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.design.widget.NavigationView;
@@ -24,14 +24,28 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.techhawk.diversify.R;
 import com.techhawk.diversify.fragment.EventFragment;
 import com.techhawk.diversify.fragment.FestivalFragment;
 import com.techhawk.diversify.fragment.HomeFragment;
 import com.techhawk.diversify.fragment.NotificationFragment;
 import com.techhawk.diversify.fragment.SettingFragment;
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+import com.techhawk.diversify.helper.GlideApp;
+import com.techhawk.diversify.model.User;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 
 public class MainActivity extends BaseActivity {
@@ -59,7 +73,16 @@ public class MainActivity extends BaseActivity {
     // flag to load home fragment when user presses back key
     private boolean shouldLoadHomeFragOnBackPress = true;
     private Handler mHandler;
-
+    private FirebaseAuth auth;
+    private FirebaseAuth.AuthStateListener authStateListener;
+    private FirebaseUser user;
+    private ImageView profilePicker;
+    private StorageReference filePath;
+    // Unique Identifier for receiving activity result
+    private static final int PICK_IMAGE = 100;
+    private Uri imageUri;
+    private User currentUser;
+    private DatabaseReference userRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +101,16 @@ public class MainActivity extends BaseActivity {
         mHandler = new Handler();
 
         // Navigation view header
-
         navHeader = navigationView.getHeaderView(0);
         imgNavHeaderBg = (ImageView) navHeader.findViewById(R.id.img_header_bg);
+        profilePicker = navHeader.findViewById(R.id.profile_pick);
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
+        if (getUid() != null) {
+            filePath = FirebaseStorage.getInstance().getReference().child("photos").child(getUid());
+            userRef = FirebaseDatabase.getInstance().getReference().child("users").child(getUid());
+        }
+
 
         // Load nav menu header
         loadNavHeader();
@@ -95,6 +123,38 @@ public class MainActivity extends BaseActivity {
             loadFragment();
         }
 
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (user == null) {
+//                    profilePicker.setVisibility(View.GONE);
+
+                } else {
+                    if (getUid() != null) {
+                        filePath = FirebaseStorage.getInstance().getReference().child("photos/"+getUid());
+                        profilePicker.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                openGallery();
+                            }
+                        });
+                    }
+
+                }
+
+            }
+        };
+        auth.addAuthStateListener(authStateListener);
+
+    }
+
+    private void openGallery() {
+        Intent gallery = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        gallery.setType("image/*");
+        startActivityForResult(gallery, PICK_IMAGE);
     }
 
     private void loadNavHeader() {
@@ -105,6 +165,24 @@ public class MainActivity extends BaseActivity {
                 .into(imgNavHeaderBg);
         // showing dot next to notifications label
         navigationView.getMenu().getItem(3).setActionView(R.layout.menu_dot);
+        if (userRef != null) {
+            userRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    currentUser = dataSnapshot.getValue(User.class);
+                    if (currentUser != null && ! currentUser.getImgUrl().isEmpty()) {
+                        Glide.with(getBaseContext()).load(currentUser.getImgUrl()).into(profilePicker);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+        profilePicker.setImageResource(R.drawable.ic_profile);
 
     }
 
@@ -249,9 +327,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
-
-
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -302,5 +377,36 @@ public class MainActivity extends BaseActivity {
             Toast.makeText(getApplicationContext(), "Clear all notifications!", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (authStateListener != null)
+            auth.removeAuthStateListener(authStateListener);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
+            imageUri = data.getData();
+            profilePicker.setImageURI(imageUri);
+            // Upload image to the Firebase storage
+            // https://firebase.google.com/docs/storage/android/upload-files
+            filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    String url = taskSnapshot.getDownloadUrl().toString();
+                    userRef.child("imgUrl").setValue(url);
+                    feedback("Upload photo done.");
+
+                }
+            });
+
+        }
     }
 }

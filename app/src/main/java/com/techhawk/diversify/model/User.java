@@ -11,6 +11,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class User implements Parcelable {
     private String name;
+    private String imgUrl;
 
     public User() {
     }
@@ -28,6 +29,15 @@ public class User implements Parcelable {
     }
 
 
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -36,13 +46,15 @@ public class User implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.name);
+        dest.writeString(this.imgUrl);
     }
 
     protected User(Parcel in) {
         this.name = in.readString();
+        this.imgUrl = in.readString();
     }
 
-    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+    public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
         public User createFromParcel(Parcel source) {
             return new User(source);

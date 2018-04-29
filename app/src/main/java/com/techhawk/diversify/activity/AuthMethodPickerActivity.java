@@ -226,6 +226,7 @@ public class AuthMethodPickerActivity extends BaseActivity implements View.OnCli
     // Write a new user to firebase
     private void createNewUser(String userId, String name) {
         User user = new User(name);
+        user.setImgUrl("");
         userRef.child(userId).setValue(user);
     }
 

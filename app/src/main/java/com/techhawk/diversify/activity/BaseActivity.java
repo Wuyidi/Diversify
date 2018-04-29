@@ -44,7 +44,10 @@ public class BaseActivity extends AppCompatActivity {
 
     // Get current user ID from Firebase
     public String getUid() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            return FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
+        return null;
     }
 
 
