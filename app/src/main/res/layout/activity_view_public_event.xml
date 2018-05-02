@@ -5,10 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.techhawk.diversify.activity.ViewPublicEventActivity"
+    android:orientation="vertical"
     >
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="450dp">
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -21,15 +23,7 @@
                 android:scaleType="fitXY"
                 android:src="@mipmap/ic_launcher" />
 
-            <Button
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_gravity="right"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:padding="8dp"
-                android:hint="Add to Notification"
-                android:background="@drawable/sign_up_button"/>
+
 
             <TextView
                 android:id="@+id/event_comments"
@@ -58,4 +52,48 @@
         </android.support.v7.widget.LinearLayoutCompat>
 
     </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:weightSum="3"
+        >
+        <Button
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:padding="8dp"
+            android:text="notification"
+            android:textColor="@color/white"
+            android:background="@drawable/sign_up_button"
+            android:layout_weight="1"
+            />
+        <Button
+            android:id="@+id/btn_view_comment"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:padding="8dp"
+            android:text="comments"
+            android:textColor="@color/white"
+            android:background="@drawable/sign_up_button"
+            android:layout_weight="1"
+            />
+        <Button
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:padding="8dp"
+            android:text="map"
+            android:textColor="@color/white"
+            android:background="@drawable/sign_up_button"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
 </LinearLayout>

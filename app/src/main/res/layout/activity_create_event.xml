@@ -61,7 +61,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/create_event_content"
-                android:hint="@string/event_title"/>
+                android:hint="@string/event_title"
+                android:background="@android:drawable/edit_text"/>
             <TextView
                 android:layout_marginLeft="8dp"
                 android:layout_width="match_parent"
@@ -77,7 +78,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/create_event_content"
-                android:hint="Location"/>
+                android:hint="Location"
+                android:background="@android:drawable/edit_text"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -86,7 +88,8 @@
                 android:layout_marginLeft="8dp"
                 android:textStyle="bold"
                 android:textSize="@dimen/create_event_subtitle"
-                android:text="@string/Event_description"/>
+                android:text="@string/Event_description"
+                />
             <EditText
                 android:id="@+id/event_description"
                 android:layout_marginLeft="8dp"
@@ -100,7 +103,8 @@
                 android:hint="Short description"
                 android:scrollHorizontally="false"
                 android:inputType="textMultiLine"
-                android:scrollbars="vertical"/>
+                android:scrollbars="vertical"
+                android:background="@android:drawable/edit_text"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

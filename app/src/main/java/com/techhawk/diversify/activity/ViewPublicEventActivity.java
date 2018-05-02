@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,14 +21,16 @@ import com.techhawk.diversify.model.Event;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
-public class ViewPublicEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class ViewPublicEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, View.OnClickListener {
 
     // Instance variable
     private Event event;
-//    private TextView headerText;
     private TextView commentsText;
     private TextView celebrationText;
     private ImageView img;
+    private Button viewCommentBtn;
+    private String key;
+
 
 
     @Override
@@ -36,7 +39,6 @@ public class ViewPublicEventActivity extends AppCompatActivity implements DatePi
         setContentView(R.layout.activity_view_public_event);
 
         // Initialization
-//        headerText = findViewById(R.id.event_header);
         commentsText = findViewById(R.id.event_comments);
         img = findViewById(R.id.img_event_bg);
         celebrationText = findViewById(R.id.event_celebration);
@@ -45,11 +47,14 @@ public class ViewPublicEventActivity extends AppCompatActivity implements DatePi
         Intent intent = getIntent();
 
         event = intent.getParcelableExtra("event");
+        key = intent.getStringExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY);
         getSupportActionBar().setTitle(event.getName());
         loadImg(event.getImgUrl());
-//        headerText.setText(event.getName());
         commentsText.setText(event.getComments());
         celebrationText.setText(event.getCelebration());
+
+        viewCommentBtn = findViewById(R.id.btn_view_comment);
+        viewCommentBtn.setOnClickListener(this);
 
     }
 
@@ -97,6 +102,18 @@ public class ViewPublicEventActivity extends AppCompatActivity implements DatePi
 
     @Override
     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()){
+            case R.id.btn_view_comment:
+                Intent intent = new Intent(this,CommentActivity.class);
+                intent.putExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY,key);
+                startActivity(intent);
+        }
 
     }
 }

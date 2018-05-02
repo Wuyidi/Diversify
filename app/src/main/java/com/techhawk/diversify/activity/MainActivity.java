@@ -19,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -55,6 +56,7 @@ public class MainActivity extends BaseActivity {
     private NavigationView navigationView;
     private View navHeader;
     private ImageView imgNavHeaderBg;
+    private TextView name;
     private Toolbar toolbar;
     // urls to load navigation header background image
     // private static final String urlNavHeaderBg = "https://api.androidhive.info/images/nav-menu-header-bg.jpg";
@@ -103,6 +105,7 @@ public class MainActivity extends BaseActivity {
         // Navigation view header
         navHeader = navigationView.getHeaderView(0);
         imgNavHeaderBg = (ImageView) navHeader.findViewById(R.id.img_header_bg);
+        name = navHeader.findViewById(R.id.user_name);
         profilePicker = navHeader.findViewById(R.id.profile_pick);
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
@@ -129,7 +132,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (user == null) {
-//                    profilePicker.setVisibility(View.GONE);
+                    profilePicker.setVisibility(View.GONE);
 
                 } else {
                     if (getUid() != null) {
@@ -141,6 +144,7 @@ public class MainActivity extends BaseActivity {
                             }
                         });
                     }
+                    name.setText(user.getEmail());
 
                 }
 

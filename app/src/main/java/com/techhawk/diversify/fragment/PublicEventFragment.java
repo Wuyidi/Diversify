@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.techhawk.diversify.R;
+import com.techhawk.diversify.activity.CommentActivity;
 import com.techhawk.diversify.activity.ViewPublicEventActivity;
 import com.techhawk.diversify.model.Event;
 import com.techhawk.diversify.viewholder.PublicEventViewHolder;
@@ -99,13 +100,15 @@ public class PublicEventFragment extends BaseFragment {
 
         adapter = new FirebaseRecyclerAdapter<Event, PublicEventViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull PublicEventViewHolder holder, int position, @NonNull final Event model) {
+            protected void onBindViewHolder(@NonNull final PublicEventViewHolder holder, int position, @NonNull final Event model) {
+                final String key = this.getRef(position).getKey();
                 holder.bindToEvent(model, getContext());
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getActivity(), ViewPublicEventActivity.class);
                         intent.putExtra("event", model);
+                        intent.putExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY,key);
                         startActivity(intent);
                     }
                 });

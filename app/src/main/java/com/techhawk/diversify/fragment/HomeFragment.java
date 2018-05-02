@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.techhawk.diversify.R;
+import com.techhawk.diversify.activity.CommentActivity;
 import com.techhawk.diversify.activity.ViewPublicEventActivity;
 import com.techhawk.diversify.helper.GPSTracker;
 import com.techhawk.diversify.model.Event;
@@ -49,7 +50,7 @@ public class HomeFragment extends BaseFragment {
     private LinearLayoutManager manager;
     private FirebaseRecyclerAdapter<Event, PublicEventViewHolder> adapter;
     private static String[] REGIONS = new String[8];
-    private int tag = 7;
+    private int tag = 1;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -200,12 +201,14 @@ public class HomeFragment extends BaseFragment {
         adapter = new FirebaseRecyclerAdapter<Event, PublicEventViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull PublicEventViewHolder holder, int position, @NonNull final Event model) {
+                final String key = this.getRef(position).getKey();
                 holder.bindToEvent(model, getContext());
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getActivity(), ViewPublicEventActivity.class);
                         intent.putExtra("event", model);
+                        intent.putExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY,key);
                         startActivity(intent);
                     }
                 });

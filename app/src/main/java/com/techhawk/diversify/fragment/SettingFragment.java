@@ -90,8 +90,8 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 auth.signOut();
                 mGoogleSignInClient.signOut();
                 LoginManager.getInstance().logOut();
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.detach(this).attach(this).commit();
+                startActivity(new Intent(this.getActivity(), AuthMethodPickerActivity.class));
+                getActivity().finish();
                 break;
 
         }

@@ -84,6 +84,8 @@
     <string name="register_my_event_content">To register your event on the Diversify please complete the form below:</string>
 
     <string name="refresh_btn">Refresh Your Recommendation</string>
-
+    <!-- comment -->
+    <string name="hint_comment_enter">Please enter your comments...</string>
+    <string name="empty_comment">NO COMMENTS AVAILABLE</string>
 
 </resources>

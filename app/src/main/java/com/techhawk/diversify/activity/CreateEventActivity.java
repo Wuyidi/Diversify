@@ -45,7 +45,7 @@ public class CreateEventActivity extends BaseActivity implements View.OnClickLis
         setContentView(R.layout.activity_create_event);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
+        hideKeyboard();
         eventRef = FirebaseDatabase.getInstance().getReference().child("users/"+getUid()+"/events");
         inputName = findViewById(R.id.event_name);
         inputLocation = findViewById(R.id.event_location);

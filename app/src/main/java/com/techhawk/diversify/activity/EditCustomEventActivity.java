@@ -92,6 +92,7 @@ public class EditCustomEventActivity extends BaseActivity {
                 save();
             }
         });
+        hideKeyboard();
 
     }
 

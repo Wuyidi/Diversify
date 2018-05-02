@@ -60,7 +60,10 @@
             android:value="AIzaSyA3zjDSrng3Cp9ASaDUkp9lFnzAbx_Ku1c" />
 
         <activity android:name=".activity.ViewCustomEventActivity" />
-        <activity android:name=".activity.EditCustomEventActivity"></activity>
+        <activity android:name=".activity.EditCustomEventActivity" />
+        <activity
+            android:name=".activity.CommentActivity">
+        </activity>
     </application>
 
 </manifest>
