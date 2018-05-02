@@ -55,6 +55,8 @@ public class CommentActivity extends BaseActivity {
     private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseUser user;
 
+    private String userName;
+
 
     public static final String EXTRA_COMMENT_EVENT_KEY = "event_comment_key";
 
@@ -104,8 +106,6 @@ public class CommentActivity extends BaseActivity {
         auth.addAuthStateListener(authStateListener);
         setUpAdapter(commentRef);
         commentView.setAdapter(adapter);
-
-
     }
 
     @Override
@@ -139,23 +139,7 @@ public class CommentActivity extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                String userName = user.getName();
-                String uid = getUid();
-                Date c = Calendar.getInstance().getTime();
-                DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                String date = dateFormat.format(c);
-                Comment comment = new Comment(uid, userName, date, 0, content);
-                commentRef.push().setValue(comment, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if (databaseError != null) {
-                            feedback("Comment couldn't be submitted " + databaseError.getMessage());
-                        } else {
-                            feedback("Submit comment successfully");
-                        }
-                        hideProgressDialog();
-                    }
-                });
+                userName = user.getName();
             }
 
             @Override
@@ -163,7 +147,22 @@ public class CommentActivity extends BaseActivity {
 
             }
         });
-
+        String uid = getUid();
+        Date c = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String date = dateFormat.format(c);
+        Comment comment = new Comment(uid, userName, date, 0, content);
+        commentRef.push().setValue(comment, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    feedback("Comment couldn't be submitted " + databaseError.getMessage());
+                } else {
+                    feedback("Submit comment successfully");
+                }
+                hideProgressDialog();
+            }
+        });
 
     }
 
@@ -220,7 +219,7 @@ public class CommentActivity extends BaseActivity {
                 if (model.getNumOfThumb() != 0) {
                     ((TextView) v.findViewById(R.id.num_thumbs)).setText(String.valueOf(model.getNumOfThumb()));
                 } else {
-                    ((TextView) v.findViewById(R.id.num_thumbs)).setText("credits");
+                    ((TextView) v.findViewById(R.id.num_thumbs)).setText("credit");
                 }
                 ((TextView) v.findViewById(R.id.comment_date)).setText(model.getDate());
                 StorageReference ref = FirebaseStorage.getInstance().getReference().child("photos").child(model.getUid());
@@ -292,7 +291,6 @@ public class CommentActivity extends BaseActivity {
     }
 
     private void deleteData(int position) {
-        String key = adapter.getRef(position).getKey();
         adapter.getRef(position).removeValue();
     }
 
