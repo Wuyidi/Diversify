@@ -1,6 +1,7 @@
 package com.techhawk.diversify.fragment;
 
 
+
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
@@ -11,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -30,7 +30,6 @@ import com.twiceyuan.dropdownmenu.ArrayDropdownAdapter;
 import com.twiceyuan.dropdownmenu.DropdownMenu;
 import com.twiceyuan.dropdownmenu.OnDropdownItemClickListener;
 
-import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -167,11 +166,9 @@ public class FavouriteFragment extends BaseFragment {
         publicAdapter = new FirebaseListAdapter<FavouriteEvent>(options) {
             @Override
             protected void populateView(View v, FavouriteEvent model, int position) {
-                final String key = this.getRef(position).getKey();
                 ((TextView) v.findViewById(R.id.event_name)).setText(model.getName());
                 ((TextView) v.findViewById(R.id.event_desc)).setText(model.getDesc());
                 ((TextView) v.findViewById(R.id.event_date)).setText(model.getDate());
-                Switch notification = v.findViewById(R.id.btn_notification);
 
             }
         };
@@ -185,30 +182,13 @@ public class FavouriteFragment extends BaseFragment {
                 .setLifecycleOwner(this).build();
         customAapter = new FirebaseListAdapter<FavouriteEvent>(options) {
             @Override
-            protected void populateView(View v, FavouriteEvent model, int position) {
-                final String key = this.getRef(position).getKey();
+            protected void populateView(View v, final FavouriteEvent model, int position) {
                 ((TextView) v.findViewById(R.id.event_name)).setText(model.getName());
                 ((TextView) v.findViewById(R.id.event_desc)).setText(model.getDesc());
                 ((TextView) v.findViewById(R.id.event_date)).setText(model.getDate());
-                Switch notification = v.findViewById(R.id.btn_notification);
-
-
 
             }
         };
     }
 
-
-    private void setNotification(String date) {
-        String[] dateParts = date.split("-");
-        int day = Integer.parseInt(dateParts[0]);
-        int month = (Integer.parseInt(dateParts[1])>0)? Integer.parseInt(dateParts[1])-1:0;
-        int year = Integer.parseInt(dateParts[2]);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year,month,day);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.HOUR, 5);
-        calendar.set(Calendar.AM_PM, Calendar.PM);
-    }
 }

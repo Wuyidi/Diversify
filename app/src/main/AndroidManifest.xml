@@ -63,6 +63,17 @@
         <activity android:name=".activity.EditCustomEventActivity" />
         <activity android:name=".activity.CommentActivity"></activity>
         <activity android:name=".activity.ViewFavouriteActivity"></activity>
+
+        <receiver android:name=".helper.AlarmReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </receiver>
+
+
     </application>
 
 </manifest>

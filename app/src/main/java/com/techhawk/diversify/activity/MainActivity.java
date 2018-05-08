@@ -1,5 +1,8 @@
 package com.techhawk.diversify.activity;
 
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -39,7 +42,14 @@ import com.techhawk.diversify.fragment.FestivalFragment;
 import com.techhawk.diversify.fragment.HomeFragment;
 import com.techhawk.diversify.fragment.FavouriteFragment;
 import com.techhawk.diversify.fragment.SettingFragment;
+import com.techhawk.diversify.helper.AlarmReceiver;
+import com.techhawk.diversify.model.FavouriteEvent;
 import com.techhawk.diversify.model.User;
+
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -80,6 +90,7 @@ public class MainActivity extends BaseActivity {
     private Uri imageUri;
     private User currentUser;
     private DatabaseReference userRef;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +158,7 @@ public class MainActivity extends BaseActivity {
         };
         auth.addAuthStateListener(authStateListener);
 
+        validateNotification();
     }
 
     private void openGallery() {
@@ -408,4 +420,82 @@ public class MainActivity extends BaseActivity {
 
         }
     }
+
+
+    private void setReminder(boolean b) {
+        AlarmManager am= (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        PendingIntent pi= PendingIntent.getBroadcast(MainActivity.this, 0, new Intent(this,AlarmReceiver.class), 0);
+        if(b){
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.SECOND,0);
+            calendar.set(Calendar.HOUR,0);
+            calendar.set(Calendar.MINUTE,0);
+            calendar.set(Calendar.AM_PM,Calendar.AM);
+            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),pi);
+        }
+        else{
+            // cancel current alarm
+            am.cancel(pi);
+        }
+
+    }
+
+    private void validateNotification() {
+
+        if (getUid() != null) {
+            DatabaseReference reference = FirebaseDatabase.getInstance()
+                    .getReference()
+                    .child("favourite_events")
+                    .child(getUid());
+
+            DatabaseReference pubRef = reference.child("public_events");
+            DatabaseReference customRef = reference.child("custom_events");
+            pubRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    String currentDate = dateFormat.format(Calendar.getInstance().getTime());
+                    for (DataSnapshot dataSnapshot1: dataSnapshot.getChildren()) {
+                        FavouriteEvent event = dataSnapshot1.getValue(FavouriteEvent.class);
+                        String date = event.getDate();
+                        if (date.equals(currentDate)) {
+                            setReminder(true);
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+            customRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    String currentDate = dateFormat.format(Calendar.getInstance().getTime());
+                    for (DataSnapshot dataSnapshot1: dataSnapshot.getChildren()) {
+                        FavouriteEvent event = dataSnapshot1.getValue(FavouriteEvent.class);
+                        String date = event.getDate();
+                        if (date.equals(currentDate)) {
+                            setReminder(true);
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+
+    }
+
 }
