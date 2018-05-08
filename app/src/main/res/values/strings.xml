@@ -5,14 +5,14 @@
     <string name="nav_festival">Festival</string>
     <string name="nav_event">Event</string>
     <string name="nav_settings">Settings</string>
-    <string name="nav_notifications">Notifications</string>
+    <string name="nav_favourite">Favourite</string>
 
     <!-- Toolbar titles when navigation menu is selected -->
     <string-array name="nav_item_activity_titles">
         <item>Upcoming Events</item>
         <item>Festival</item>
         <item>Event</item>
-        <item>Notifications</item>
+        <item>Favourite</item>
         <item>Settings</item>
     </string-array>
 
@@ -29,10 +29,21 @@
     </string-array>
 
     <!-- Dropdown menu type list -->
-    <string-array name="dropdown_munu_type">
-        <item>private</item>
-        <item>public</item>
+    <string-array name="dropdown_menu_type">
+        <item>Your event</item>
+        <item>Public</item>
     </string-array>
+
+    <string-array name="dropdown_menu_category">
+        <item>Public event</item>
+        <item>Custom event</item>
+    </string-array>
+
+    <!-- Bottom navigation bar -->
+    <string name="tab_favourite">Favourite</string>
+    <string name="tab_comment">Comment</string>
+    <string name="tab_map">Location</string>
+    <string name="tab_info">Event Info</string>
 
 
     <!-- Activity titles -->
@@ -87,5 +98,8 @@
     <!-- comment -->
     <string name="hint_comment_enter">Please enter your comments...</string>
     <string name="empty_comment">NO COMMENTS AVAILABLE</string>
+
+    <!-- favourite -->
+    <string name="empty_favourite">NO FAVOURITE EVENT AVAILABLE</string>
 
 </resources>

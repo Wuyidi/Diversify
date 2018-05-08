@@ -102,12 +102,14 @@ public class PublicEventFragment extends BaseFragment {
             @Override
             protected void onBindViewHolder(@NonNull final PublicEventViewHolder holder, int position, @NonNull final Event model) {
                 final String key = this.getRef(position).getKey();
+                final String region = this.getRef(position).getParent().getKey();
                 holder.bindToEvent(model, getContext());
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getActivity(), ViewPublicEventActivity.class);
-                        intent.putExtra("event", model);
+//                        intent.putExtra("event", model);
+                        intent.putExtra("region",region);
                         intent.putExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY,key);
                         startActivity(intent);
                     }

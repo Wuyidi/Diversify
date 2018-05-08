@@ -49,51 +49,24 @@
                 android:textSize="@dimen/festival_history_text_size"/>
 
 
+            <ToggleButton
+                android:id="@+id/btn_favourite"
+                android:layout_width="101dp"
+                android:layout_height="33dp"
+                android:layout_marginTop="16dp"
+                android:background="@android:color/transparent"
+                android:button="@drawable/custom_favourite_button"
+                android:textColor="@android:color/black"
+                android:textOn="like"
+                android:textOff="unlike"/>
+
+
         </android.support.v7.widget.LinearLayoutCompat>
 
     </ScrollView>
-    <LinearLayout
+    <com.ashokvarma.bottomnavigation.BottomNavigationBar
+        android:layout_gravity="bottom"
+        android:id="@+id/bottom_navigation_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        android:weightSum="3"
-        >
-        <Button
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:padding="8dp"
-            android:text="notification"
-            android:textColor="@color/white"
-            android:background="@drawable/sign_up_button"
-            android:layout_weight="1"
-            />
-        <Button
-            android:id="@+id/btn_view_comment"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:padding="8dp"
-            android:text="comments"
-            android:textColor="@color/white"
-            android:background="@drawable/sign_up_button"
-            android:layout_weight="1"
-            />
-        <Button
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:padding="8dp"
-            android:text="map"
-            android:textColor="@color/white"
-            android:background="@drawable/sign_up_button"
-            android:layout_weight="1"
-            />
-    </LinearLayout>
+        android:layout_height="wrap_content"/>
 </LinearLayout>

@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListOptions;
@@ -44,8 +46,8 @@ import java.util.Date;
 
 public class CommentActivity extends BaseActivity {
     private String refKey;
+    private String region;
     private DatabaseReference commentRef;
-    private StorageReference filePath;
     private FirebaseListAdapter<Comment> adapter;
     private ListView commentView;
     private TextView emptyView;
@@ -54,9 +56,7 @@ public class CommentActivity extends BaseActivity {
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseUser user;
-
-    private String userName;
-
+    private BottomNavigationBar bottomNavigationBar;
 
     public static final String EXTRA_COMMENT_EVENT_KEY = "event_comment_key";
 
@@ -67,8 +67,28 @@ public class CommentActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         hideKeyboard();
         setTitle("Comments");
+        bottomNavigationBar = findViewById(R.id.bottom_navigation_bar);
         refKey = this.getIntent().getStringExtra(EXTRA_COMMENT_EVENT_KEY);
+        region = this.getIntent().getStringExtra("region");
         commentRef = FirebaseDatabase.getInstance().getReference().child("comments").child(refKey);
+        emptyView = findViewById(R.id.empty_comment);
+        commentRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChildren()) {
+                    emptyView.setVisibility(View.GONE);
+                    commentView.setVisibility(View.VISIBLE);
+                } else {
+                    emptyView.setVisibility(View.VISIBLE);
+                    commentView.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         // Require permission
         auth = FirebaseAuth.getInstance();
@@ -77,7 +97,6 @@ public class CommentActivity extends BaseActivity {
 
         // Get reference from activity
         commentView = findViewById(R.id.comment_view);
-        emptyView = findViewById(R.id.empty_comment);
         submitButton = findViewById(R.id.btn_submit);
         inputComment = findViewById(R.id.comment_edit);
 
@@ -106,6 +125,7 @@ public class CommentActivity extends BaseActivity {
         auth.addAuthStateListener(authStateListener);
         setUpAdapter(commentRef);
         commentView.setAdapter(adapter);
+        setUpBottomNavigationBar();
     }
 
     @Override
@@ -139,7 +159,23 @@ public class CommentActivity extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                userName = user.getName();
+                String userName = user.getName();
+                String uid = getUid();
+                Date c = Calendar.getInstance().getTime();
+                DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                String date = dateFormat.format(c);
+                Comment comment = new Comment(uid, userName, date, 0, content);
+                commentRef.push().setValue(comment, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            feedback("Comment couldn't be submitted " + databaseError.getMessage());
+                        } else {
+                            feedback("Submit comment successfully");
+                        }
+
+                    }
+                });
             }
 
             @Override
@@ -147,22 +183,8 @@ public class CommentActivity extends BaseActivity {
 
             }
         });
-        String uid = getUid();
-        Date c = Calendar.getInstance().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        String date = dateFormat.format(c);
-        Comment comment = new Comment(uid, userName, date, 0, content);
-        commentRef.push().setValue(comment, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    feedback("Comment couldn't be submitted " + databaseError.getMessage());
-                } else {
-                    feedback("Submit comment successfully");
-                }
-                hideProgressDialog();
-            }
-        });
+
+        hideProgressDialog();
 
     }
 
@@ -204,6 +226,8 @@ public class CommentActivity extends BaseActivity {
         if (authStateListener != null) {
             auth.removeAuthStateListener(authStateListener);
         }
+
+
     }
 
     private void setUpAdapter(Query query) {
@@ -225,66 +249,78 @@ public class CommentActivity extends BaseActivity {
                 StorageReference ref = FirebaseStorage.getInstance().getReference().child("photos").child(model.getUid());
                 ImageView profile = v.findViewById(R.id.profile);
                 loadProfileImage(ref, profile);
-                if (getUid().equals(model.getUid())) {
-                    v.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            buildDeleteDialog(model, position);
-                        }
-                    });
-                }
+
                 final ToggleButton thumb = v.findViewById(R.id.btn_thumb);
-                // validate credit
-                String key = this.getRef(position).getKey();
-                DatabaseReference reference = FirebaseDatabase
-                        .getInstance()
-                        .getReference()
-                        .child("users")
-                        .child(getUid())
-                        .child("comment_credit")
-                        .child(key);
-
-                reference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        CommentCredited commentCredited = dataSnapshot.getValue(CommentCredited.class);
-                        if (commentCredited == null || !commentCredited.isCredited()) {
-                            thumb.setChecked(false);
-                        } else {
-                            thumb.setChecked(true);
-                        }
+                if (getUid() != null) {
+                    if (getUid().equals(model.getUid())) {
+                        v.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                buildDeleteDialog(position);
+                            }
+                        });
                     }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    // validate credit
+                    String key = this.getRef(position).getKey();
+                    DatabaseReference reference = FirebaseDatabase
+                            .getInstance()
+                            .getReference()
+                            .child("comment_credit")
+                            .child(getUid())
+                            .child(key);
 
-                    }
-                });
-
-                if (model.getUid().equals(getUid())) {
-                    thumb.setChecked(false);
-                    thumb.setOnClickListener(new View.OnClickListener() {
+                    reference.addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onClick(View view) {
-                            thumb.setChecked(false);
-                            feedback("Couldn't credit your comment!");
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            CommentCredited commentCredited = dataSnapshot.getValue(CommentCredited.class);
+                            if (commentCredited == null || !commentCredited.isCredited()) {
+                                thumb.setChecked(false);
+                            } else {
+                                thumb.setChecked(true);
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
                         }
                     });
+
+                    if (model.getUid().equals(getUid())) {
+                        thumb.setChecked(false);
+                        thumb.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                thumb.setChecked(false);
+                                feedback("Couldn't credit your comment!");
+                            }
+                        });
+                    } else {
+                        thumb.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (thumb.isChecked()) {
+                                    thumb(position, model.getNumOfThumb());
+                                    setCredited(position, true);
+                                } else {
+                                    cancelThumb(position, model.getNumOfThumb());
+                                    setCredited(position, false);
+                                }
+                            }
+                        });
+                    }
+
                 } else {
                     thumb.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (thumb.isChecked()) {
-                                thumb(position, model.getNumOfThumb());
-                                setCredited(position, true);
-                            } else {
-                                cancelThumb(position, model.getNumOfThumb());
-                                setCredited(position, false);
-                            }
+                            thumb.setChecked(false);
+                            feedback("Couldn't credit:Please login first!");
                         }
                     });
                 }
-
             }
         };
 
@@ -294,7 +330,7 @@ public class CommentActivity extends BaseActivity {
         adapter.getRef(position).removeValue();
     }
 
-    private void buildDeleteDialog(Comment comment, final int position) {
+    private void buildDeleteDialog( final int position) {
         // Build a dialog to delete item
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Delete Comment?");
@@ -321,12 +357,56 @@ public class CommentActivity extends BaseActivity {
         DatabaseReference reference = FirebaseDatabase
                 .getInstance()
                 .getReference()
-                .child("users")
-                .child(getUid())
                 .child("comment_credit")
+                .child(getUid())
                 .child(key);
         CommentCredited commentCredited = new CommentCredited(isCredited);
         reference.setValue(commentCredited);
+    }
+
+    private void setUpBottomNavigationBar() {
+        BottomNavigationItem item1 = new BottomNavigationItem(R.drawable.ic_event, R.string.tab_info);
+        BottomNavigationItem item2 = new BottomNavigationItem(R.drawable.ic_comment, R.string.tab_comment);
+        BottomNavigationItem item3 = new BottomNavigationItem(R.drawable.ic_map, R.string.tab_map);
+        bottomNavigationBar.addItem(item1).addItem(item2).addItem(item3).initialise();
+        bottomNavigationBar.selectTab(1, false);
+        bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(int position) {
+                if (position == 0) {
+                    if (region != null) {
+                        Intent intent = new Intent(CommentActivity.this, ViewPublicEventActivity.class);
+                        intent.putExtra(EXTRA_COMMENT_EVENT_KEY, refKey);
+                        intent.putExtra("region",region);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Intent intent = new Intent(CommentActivity.this,ViewCustomEventActivity.class);
+                        intent.putExtra(ViewCustomEventActivity.EXTRA_EVENT_KEY, refKey);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onTabUnselected(int position) {
+
+            }
+
+            @Override
+            public void onTabReselected(int position) {
+
+            }
+        });
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 
 

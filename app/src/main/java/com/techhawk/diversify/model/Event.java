@@ -19,6 +19,7 @@ public class Event implements Parcelable {
     private String imgUrl;
     private String month;
     private String date;
+    private String location;
 
     public Event() {
     }
@@ -71,6 +72,14 @@ public class Event implements Parcelable {
         this.date = date;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
 
     @Override
     public int describeContents() {
@@ -85,6 +94,7 @@ public class Event implements Parcelable {
         dest.writeString(this.imgUrl);
         dest.writeString(this.month);
         dest.writeString(this.date);
+        dest.writeString(this.location);
     }
 
     protected Event(Parcel in) {
@@ -94,6 +104,7 @@ public class Event implements Parcelable {
         this.imgUrl = in.readString();
         this.month = in.readString();
         this.date = in.readString();
+        this.location = in.readString();
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {

@@ -15,17 +15,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,9 +37,8 @@ import com.techhawk.diversify.R;
 import com.techhawk.diversify.fragment.EventFragment;
 import com.techhawk.diversify.fragment.FestivalFragment;
 import com.techhawk.diversify.fragment.HomeFragment;
-import com.techhawk.diversify.fragment.NotificationFragment;
+import com.techhawk.diversify.fragment.FavouriteFragment;
 import com.techhawk.diversify.fragment.SettingFragment;
-import com.techhawk.diversify.helper.GlideApp;
 import com.techhawk.diversify.model.User;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
@@ -67,7 +62,7 @@ public class MainActivity extends BaseActivity {
     private static final String TAG_HOME = "home";
     private static final String TAG_FESTIVAL = "festival";
     private static final String TAG_SETTINGS = "settings";
-    private static final String TAG_NOTIFICATIONS = "notifications";
+    private static final String TAG_FAVOURITE = "favourite";
     private static final String TAG_EVENT = "event";
     public static String CURRENT_TAG = TAG_HOME;
     // toolbar titles respected to selected nav menu item
@@ -167,8 +162,8 @@ public class MainActivity extends BaseActivity {
                 .transition(withCrossFade())
                 .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL))
                 .into(imgNavHeaderBg);
-        // showing dot next to notifications label
-        navigationView.getMenu().getItem(3).setActionView(R.layout.menu_dot);
+        // showing dot next to favourite label
+//        navigationView.getMenu().getItem(3).setActionView(R.layout.menu_dot);
         if (userRef != null) {
             userRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -211,9 +206,9 @@ public class MainActivity extends BaseActivity {
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_EVENT;
                         break;
-                    case R.id.nav_notification:
+                    case R.id.nav_favourite:
                         navItemIndex = 3;
-                        CURRENT_TAG = TAG_NOTIFICATIONS;
+                        CURRENT_TAG = TAG_FAVOURITE;
                         break;
                     case R.id.nav_setting:
                         navItemIndex = 4;
@@ -310,9 +305,9 @@ public class MainActivity extends BaseActivity {
                 Fragment eventFragment = new EventFragment();
                 return eventFragment;
             case 3:
-                // notifications
-                Fragment notificationFragment = new NotificationFragment();
-                return notificationFragment;
+                // favourites
+                Fragment favouriteFragment = new FavouriteFragment();
+                return favouriteFragment;
             case 4:
                 // settings
                 Fragment settingFragment = new SettingFragment();
@@ -356,32 +351,32 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        // when fragment is notifications, load the menu created for notifications
+        // when fragment is favourite, load the menu created for favourite
         if (navItemIndex == 3) {
-            getMenuInflater().inflate(R.menu.notifications, menu);
+            getMenuInflater().inflate(R.menu.favourite, menu);
         }
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        // user is in notifications fragment
-        // and selected 'Mark all as Read'
-        if (id == R.id.action_mark_all_read) {
-            Toast.makeText(getApplicationContext(), "All notifications marked as read!", Toast.LENGTH_LONG).show();
-        }
-
-        // user is in notifications fragment
-        // and selected 'Clear All'
-        if (id == R.id.action_clear_notifications) {
-            Toast.makeText(getApplicationContext(), "Clear all notifications!", Toast.LENGTH_LONG).show();
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//        // user is in favourite fragment
+//        // and selected 'Mark all as Read'
+//        if (id == R.id.action_mark_all_read) {
+//            Toast.makeText(getApplicationContext(), "All favourite marked as read!", Toast.LENGTH_LONG).show();
+//        }
+//
+//        // user is in favourite fragment
+//        // and selected 'Clear All'
+//        if (id == R.id.action_clear_notifications) {
+//            Toast.makeText(getApplicationContext(), "Clear all favourite!", Toast.LENGTH_LONG).show();
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
 
 

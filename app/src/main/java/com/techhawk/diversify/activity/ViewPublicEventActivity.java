@@ -2,6 +2,7 @@ package com.techhawk.diversify.activity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,27 +10,47 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
+import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.techhawk.diversify.R;
 import com.techhawk.diversify.model.Event;
+import com.techhawk.diversify.model.FavouriteEvent;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
-public class ViewPublicEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, View.OnClickListener {
+public class ViewPublicEventActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
 
     // Instance variable
     private Event event;
     private TextView commentsText;
     private TextView celebrationText;
     private ImageView img;
-    private Button viewCommentBtn;
     private String key;
+    private DatabaseReference eventRef;
+    private BottomNavigationBar bottomNavigationBar;
+    private String region;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private FirebaseAuth.AuthStateListener authStateListener;
+    private ToggleButton favouriteBtn;
+    private DatabaseReference favouriteRef;
+
 
 
 
@@ -42,19 +63,83 @@ public class ViewPublicEventActivity extends AppCompatActivity implements DatePi
         commentsText = findViewById(R.id.event_comments);
         img = findViewById(R.id.img_event_bg);
         celebrationText = findViewById(R.id.event_celebration);
+        bottomNavigationBar = findViewById(R.id.bottom_navigation_bar);
+        favouriteBtn = findViewById(R.id.btn_favourite);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
-
-        event = intent.getParcelableExtra("event");
         key = intent.getStringExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY);
-        getSupportActionBar().setTitle(event.getName());
-        loadImg(event.getImgUrl());
-        commentsText.setText(event.getComments());
-        celebrationText.setText(event.getCelebration());
+        region = intent.getStringExtra("region");
+        eventRef = FirebaseDatabase.getInstance().getReference().child("events").child(region).child(key);
+//        event = intent.getParcelableExtra("event");
+        eventRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                event = dataSnapshot.getValue(Event.class);
+                getSupportActionBar().setTitle(event.getName());
+                loadImg(event.getImgUrl());
+                commentsText.setText(event.getComments());
+                celebrationText.setText(event.getCelebration());
+            }
 
-        viewCommentBtn = findViewById(R.id.btn_view_comment);
-        viewCommentBtn.setOnClickListener(this);
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        // Require permission
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (user == null) {
+                    favouriteBtn.setVisibility(View.GONE);
+                } else {
+                    favouriteBtn.setVisibility(View.VISIBLE);
+                }
+            }
+        };
+
+        auth.addAuthStateListener(authStateListener);
+
+        favouriteRef = FirebaseDatabase.getInstance()
+                .getReference()
+                .child("favourite_events")
+                .child(getUid())
+                .child("public_events")
+                .child(key);
+
+        favouriteRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChildren()) {
+                    favouriteBtn.setChecked(true);
+                } else {
+                    favouriteBtn.setChecked(false);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+       favouriteBtn.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               if (favouriteBtn.isChecked()) {
+                  addFavourite();
+               } else {
+                   removeFavourite();
+               }
+           }
+       });
+
+        setUpBottomNavigationBar();
 
     }
 
@@ -105,15 +190,62 @@ public class ViewPublicEventActivity extends AppCompatActivity implements DatePi
 
     }
 
+
+    private void setUpBottomNavigationBar() {
+        BottomNavigationItem item1 = new BottomNavigationItem(R.drawable.ic_event, R.string.tab_info);
+        BottomNavigationItem item2 = new BottomNavigationItem(R.drawable.ic_comment, R.string.tab_comment);
+        BottomNavigationItem item3 = new BottomNavigationItem(R.drawable.ic_map, R.string.tab_map);
+        bottomNavigationBar.addItem(item1).addItem(item2).addItem(item3).initialise();
+        bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(int position) {
+                if (position == 1) {
+                    Intent intent = new Intent(ViewPublicEventActivity.this,CommentActivity.class);
+                    intent.putExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY,key);
+                    intent.putExtra("region", region);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onTabUnselected(int position) {
+
+            }
+
+            @Override
+            public void onTabReselected(int position) {
+
+            }
+        });
+    }
+
+    private void addFavourite() {
+        FavouriteEvent favouriteEvent = new FavouriteEvent();
+        favouriteEvent.setName(event.getName());
+        favouriteEvent.setDate(event.getDate());
+        favouriteEvent.setDesc(event.getComments());
+        favouriteEvent.setLocation(event.getLocation());
+
+        favouriteRef.setValue(favouriteEvent);
+    }
+
+    private void removeFavourite() {
+        favouriteRef.removeValue();
+    }
+
     @Override
-    public void onClick(View view) {
+    protected void onPause() {
+        super.onPause();
+        bottomNavigationBar.selectTab(0,false);
 
-        switch (view.getId()){
-            case R.id.btn_view_comment:
-                Intent intent = new Intent(this,CommentActivity.class);
-                intent.putExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY,key);
-                startActivity(intent);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (authStateListener != null) {
+            auth.removeAuthStateListener(authStateListener);
         }
-
     }
 }

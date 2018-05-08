@@ -19,7 +19,10 @@ public class BaseFragment extends Fragment {
 
     // Get current user ID from firebase
     public String getUid() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            return FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
+        return null;
     }
 
 

@@ -28,6 +28,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.techhawk.diversify.R;
 import com.techhawk.diversify.activity.AuthMethodPickerActivity;
 import com.techhawk.diversify.activity.CreateEventActivity;
@@ -81,7 +83,7 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
         noticeView = rootView.findViewById(R.id.login_notice);
         eventView = rootView.findViewById(R.id.event_list_view);
         eventView.setHasFixedSize(true);
-        TYPES = getResources().getStringArray(R.array.dropdown_munu_type);
+        TYPES = getResources().getStringArray(R.array.dropdown_menu_type);
         final DropdownMenu typeMenu = rootView.findViewById(R.id.dm_dropdown);
         typeMenu.setAdapter(new ArrayDropdownAdapter(getContext(),R.layout.dropdown_light_item_oneline,TYPES));
         typeMenu.getListView().setDivider(ContextCompat.getDrawable(getContext(),R.drawable.inset_divider));
@@ -206,7 +208,8 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
             @Override
             protected void onBindViewHolder(@NonNull final CustomEventViewHolder holder, final int position, @NonNull final CustomEvent model) {
                 final String key = this.getRef(position).getKey();
-                holder.bindToCustomEvent(model, new View.OnClickListener() {
+                StorageReference ref = FirebaseStorage.getInstance().getReference().child("event").child(key);
+                holder.bindToCustomEvent(model,getContext(),ref, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         buildDialog(model,holder.getAdapterPosition());
@@ -241,7 +244,8 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
             @Override
             protected void onBindViewHolder(@NonNull final PrivateEventViewHolder holder, final int position, @NonNull final CustomEvent model) {
                 final String key = this.getRef(position).getKey();
-                holder.bindToCustomEvent(model, new View.OnClickListener() {
+                StorageReference ref = FirebaseStorage.getInstance().getReference().child("event").child(key);
+                holder.bindToCustomEvent(model,getContext(),ref, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         buildDialog(model,holder.getAdapterPosition());

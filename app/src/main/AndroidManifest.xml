@@ -61,9 +61,8 @@
 
         <activity android:name=".activity.ViewCustomEventActivity" />
         <activity android:name=".activity.EditCustomEventActivity" />
-        <activity
-            android:name=".activity.CommentActivity">
-        </activity>
+        <activity android:name=".activity.CommentActivity"></activity>
+        <activity android:name=".activity.ViewFavouriteActivity"></activity>
     </application>
 
 </manifest>

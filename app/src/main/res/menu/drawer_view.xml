@@ -15,9 +15,9 @@
             android:title="@string/nav_event"
             android:icon="@drawable/ic_event"/>
         <item
-            android:id="@+id/nav_notification"
-            android:title="@string/nav_notifications"
-            android:icon="@drawable/ic_alarm"/>
+            android:id="@+id/nav_favourite"
+            android:title="@string/nav_favourite"
+            android:icon="@drawable/ic_favourite_selected"/>
         <item
             android:id="@+id/nav_setting"
             android:title="@string/nav_settings"

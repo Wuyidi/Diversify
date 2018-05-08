@@ -207,8 +207,9 @@ public class HomeFragment extends BaseFragment {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getActivity(), ViewPublicEventActivity.class);
-                        intent.putExtra("event", model);
+//                        intent.putExtra("event", model);
                         intent.putExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY,key);
+                        intent.putExtra("region",REGIONS[tag]);
                         startActivity(intent);
                     }
                 });

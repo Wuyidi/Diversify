@@ -40,15 +40,15 @@
     <ListView
         android:id="@+id/comment_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="388dp"
         android:scrollbars="vertical"
-        tools:listitem="@layout/list_comment_item"
-        />
+        tools:listitem="@layout/list_comment_item" />
+
 
     <TextView
         android:id="@+id/empty_comment"
         android:layout_width="wrap_content"
-        android:layout_height="437dp"
+        android:layout_height="370dp"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -59,6 +59,12 @@
         android:textColor="@android:color/darker_gray"
         android:textSize="32dp"
         android:visibility="gone"/>
+
+    <com.ashokvarma.bottomnavigation.BottomNavigationBar
+        android:layout_gravity="bottom"
+        android:id="@+id/bottom_navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 
 </LinearLayout>

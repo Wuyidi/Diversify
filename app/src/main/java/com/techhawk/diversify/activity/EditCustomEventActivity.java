@@ -2,6 +2,7 @@ package com.techhawk.diversify.activity;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -12,12 +13,16 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.techhawk.diversify.R;
 import com.techhawk.diversify.model.CustomEvent;
 
@@ -39,6 +44,11 @@ public class EditCustomEventActivity extends BaseActivity {
     private static final String ERROR = "Required";
     private boolean isPublic;
     private String key;
+    private Button uploadButton;
+    private Uri imageUri;
+    private StorageReference filePath;
+
+    private static final int PICK_IMAGE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +62,8 @@ public class EditCustomEventActivity extends BaseActivity {
         inputDate = findViewById(R.id.event_date);
         saveButton = findViewById(R.id.btn_save);
         switchButton = findViewById(R.id.btn_switch);
-
         key = getIntent().getStringExtra("event_key");
+        filePath = FirebaseStorage.getInstance().getReference().child("event").child(key);
         eventRef = FirebaseDatabase.getInstance().getReference().child("users/"+getUid()+"/events").child(key);
         publicRef = FirebaseDatabase.getInstance().getReference().child("custom_events").child(key);
         publicRef.addValueEventListener(new ValueEventListener() {
@@ -83,6 +93,13 @@ public class EditCustomEventActivity extends BaseActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+        uploadButton = findViewById(R.id.btn_upload);
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openGallery();
             }
         });
 
@@ -227,6 +244,31 @@ public class EditCustomEventActivity extends BaseActivity {
             });
 
             publicRef.setValue(null);
+        }
+    }
+
+    private void openGallery() {
+        Intent gallery = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        gallery.setType("image/*");
+        startActivityForResult(gallery, PICK_IMAGE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
+            imageUri = data.getData();
+            // Upload image to the Firebase storage
+            // https://firebase.google.com/docs/storage/android/upload-files
+            filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    feedback("Upload image done.");
+
+                }
+            });
+
         }
     }
 }
