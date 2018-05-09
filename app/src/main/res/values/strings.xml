@@ -48,7 +48,11 @@
 
     <!-- Activity titles -->
     <string name="activity_title_about_us">About Us</string>
-
+    <string name="about_us_content1">Tech Hawks is formed by a group of international students at Monash University. We have built this application to analyse the combination of culture and technology.
+</string>
+    <string name="about_us_content2">The central theme of Diversify is to help users touch, accept, and learn about a different culture. This way, different individuals would not only learn about new cultures but also understand their habits and ways of life; understanding their behaviour. </string>
+    <string name="about_us_content3">Whether you are homesick and wish to visit your own cultural events, or meet diverse people by visiting different cultural events, Diversify allows you to explore your options, meet different people, and expand your insight on cultures.</string>
+    <string name="about_us_brand">© 2018 TechHawks</string>
     <!-- Toolbar actions -->
     <string name="action_clear_all">Clear All</string>
     <string name="action_mark_all_read">Mark All as Read</string>

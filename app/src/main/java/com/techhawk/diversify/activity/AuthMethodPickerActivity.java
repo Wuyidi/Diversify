@@ -121,7 +121,7 @@ public class AuthMethodPickerActivity extends BaseActivity implements View.OnCli
                 signInWithEmail(inputEmail.getText().toString().trim(), inputPassword.getText().toString().trim());
                 break;
             case R.id.btn_skip:
-                startActivity(new Intent(AuthMethodPickerActivity.this, MainActivity.class));
+                startActivity(new Intent(AuthMethodPickerActivity.this, GuideActivity.class));
                 break;
             case R.id.btn_register:
                 startActivity(new Intent(AuthMethodPickerActivity.this, SignUpActivity.class));
@@ -150,7 +150,7 @@ public class AuthMethodPickerActivity extends BaseActivity implements View.OnCli
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            startActivity(new Intent(AuthMethodPickerActivity.this, MainActivity.class));
+                            startActivity(new Intent(AuthMethodPickerActivity.this, GuideActivity.class));
                             finish();
                         } else {
 
@@ -206,7 +206,7 @@ public class AuthMethodPickerActivity extends BaseActivity implements View.OnCli
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 createNewUser(user.getUid(), user.getDisplayName());
                             }
-                            startActivity(new Intent(AuthMethodPickerActivity.this, MainActivity.class));
+                            startActivity(new Intent(AuthMethodPickerActivity.this, GuideActivity.class));
                             finish();
                         } else {
                             feedback(getString(R.string.auth_failed));
@@ -252,7 +252,7 @@ public class AuthMethodPickerActivity extends BaseActivity implements View.OnCli
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 createNewUser(user.getUid(), user.getDisplayName());
                             }
-                            startActivity(new Intent(AuthMethodPickerActivity.this, MainActivity.class));
+                            startActivity(new Intent(AuthMethodPickerActivity.this, GuideActivity.class));
                             finish();
 
                         } else {
@@ -291,7 +291,7 @@ public class AuthMethodPickerActivity extends BaseActivity implements View.OnCli
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
         if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, GuideActivity.class));
             finish();
         }
     }

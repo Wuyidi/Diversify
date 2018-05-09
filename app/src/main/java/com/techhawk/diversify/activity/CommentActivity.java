@@ -387,6 +387,20 @@ public class CommentActivity extends BaseActivity {
                         finish();
                     }
 
+                } else if (position == 2) {
+                    if (region != null) {
+                        Intent intent = new Intent(CommentActivity.this,ViewLocationActivity.class);
+                        intent.putExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY, refKey);
+                        intent.putExtra("region",region);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Intent intent = new Intent(CommentActivity.this,ViewLocationActivity.class);
+                        intent.putExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY, refKey);
+                        startActivity(intent);
+                        finish();
+                    }
+
                 }
             }
 

@@ -1,17 +1,21 @@
 package com.techhawk.diversify.activity;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -29,6 +33,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.techhawk.diversify.R;
+import com.techhawk.diversify.helper.GmailSender;
+import com.techhawk.diversify.model.CustomEvent;
 import com.techhawk.diversify.model.Event;
 import com.techhawk.diversify.model.FavouriteEvent;
 
@@ -50,6 +56,7 @@ public class ViewPublicEventActivity extends BaseActivity implements DatePickerD
     private FirebaseAuth.AuthStateListener authStateListener;
     private ToggleButton favouriteBtn;
     private DatabaseReference favouriteRef;
+    private Button shareButton;
 
 
 
@@ -139,6 +146,14 @@ public class ViewPublicEventActivity extends BaseActivity implements DatePickerD
            }
        });
 
+       shareButton = findViewById(R.id.btn_share);
+       shareButton.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               buildDialog();
+           }
+       });
+
         setUpBottomNavigationBar();
 
     }
@@ -205,6 +220,12 @@ public class ViewPublicEventActivity extends BaseActivity implements DatePickerD
                     intent.putExtra("region", region);
                     startActivity(intent);
                     finish();
+                } else if (position == 2) {
+                    Intent intent = new Intent(ViewPublicEventActivity.this,ViewLocationActivity.class);
+                    intent.putExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY, key);
+                    intent.putExtra("region", region);
+                    startActivity(intent);
+                    finish();
                 }
             }
 
@@ -248,4 +269,60 @@ public class ViewPublicEventActivity extends BaseActivity implements DatePickerD
             auth.removeAuthStateListener(authStateListener);
         }
     }
+
+    private void buildDialog() {
+        final Dialog dialog = new Dialog(ViewPublicEventActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_edit_emial_dialog);
+        dialog.setCancelable(false);
+        Button sendButton = dialog.findViewById(R.id.btn_send);
+        Button cancelButton = dialog.findViewById(R.id.btn_cancel);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText inputEmail = dialog.findViewById(R.id.input_email);
+                EditText inputName = dialog.findViewById(R.id.input_name);
+                String email = inputEmail.getText().toString().trim();
+                String name = inputName.getText().toString().trim();
+                sendEmail(event, email,name);
+                dialog.cancel();
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
+        dialog.show();
+
+    }
+
+
+    private void sendEmail(final Event event, final String toEmail, final String name) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    GmailSender sender = new GmailSender("techhawks.diversify@gmail.com",
+                            "techhawks");
+
+                    String body = "Hello,\n\n" + name
+                            + " invite you attend "
+                            + event.getName() + " " + event.getDate()
+                            +" in "
+                            + event.getLocation() + ".";
+                    sender.sendMail("Hello from TechHawks.Diversify", body,
+                            "techhawks.diversify@gmail.com", toEmail);
+                } catch (Exception e) {
+                    Log.e("SendMail", e.getMessage(), e);
+                }
+            }
+
+        }).start();
+
+    }
+
 }

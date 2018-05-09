@@ -48,17 +48,28 @@
                 android:text="XXX festival is ..."
                 android:textSize="@dimen/festival_history_text_size"/>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ToggleButton
+                    android:id="@+id/btn_favourite"
+                    android:layout_width="101dp"
+                    android:layout_height="33dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@android:color/transparent"
+                    android:button="@drawable/custom_favourite_button"
+                    android:textColor="@android:color/black"
+                    android:textOn="like"
+                    android:textOff="unlike"/>
 
-            <ToggleButton
-                android:id="@+id/btn_favourite"
-                android:layout_width="101dp"
-                android:layout_height="33dp"
-                android:layout_marginTop="16dp"
-                android:background="@android:color/transparent"
-                android:button="@drawable/custom_favourite_button"
-                android:textColor="@android:color/black"
-                android:textOn="like"
-                android:textOff="unlike"/>
+                <Button
+                    android:id="@+id/btn_share"
+                    android:layout_marginTop="16dp"
+                    android:layout_width="33dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/ic_share" />
+            </LinearLayout>
 
 
         </android.support.v7.widget.LinearLayoutCompat>

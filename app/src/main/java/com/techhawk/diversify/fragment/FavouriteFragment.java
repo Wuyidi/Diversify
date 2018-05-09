@@ -8,6 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -99,26 +102,24 @@ public class FavouriteFragment extends BaseFragment {
             publicRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (! dataSnapshot.hasChildren()) {
-                        emptyView.setVisibility(View.VISIBLE);
-                    } else {
-                        emptyView.setVisibility(View.GONE);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-            customRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.hasChildren()) {
                         emptyView.setVisibility(View.GONE);
                     } else {
-                        emptyView.setVisibility(View.VISIBLE);
+                        customRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.hasChildren()) {
+                                    emptyView.setVisibility(View.GONE);
+                                } else {
+                                    emptyView.setVisibility(View.VISIBLE);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                 }
 
@@ -127,6 +128,8 @@ public class FavouriteFragment extends BaseFragment {
 
                 }
             });
+
+
 
             setUpPublicAdapter(publicRef);
             favouriteView.setAdapter(publicAdapter);

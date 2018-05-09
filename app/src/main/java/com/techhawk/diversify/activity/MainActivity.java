@@ -4,10 +4,12 @@ package com.techhawk.diversify.activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -158,7 +160,13 @@ public class MainActivity extends BaseActivity {
         };
         auth.addAuthStateListener(authStateListener);
 
-        validateNotification();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        int i = preferences.getInt("numOfLaunch",1);
+        if (i<2) {
+            validateNotification();
+        }
     }
 
     private void openGallery() {
@@ -370,25 +378,28 @@ public class MainActivity extends BaseActivity {
         return true;
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//        // user is in favourite fragment
-//        // and selected 'Mark all as Read'
-//        if (id == R.id.action_mark_all_read) {
-//            Toast.makeText(getApplicationContext(), "All favourite marked as read!", Toast.LENGTH_LONG).show();
-//        }
-//
-//        // user is in favourite fragment
-//        // and selected 'Clear All'
-//        if (id == R.id.action_clear_notifications) {
-//            Toast.makeText(getApplicationContext(), "Clear all favourite!", Toast.LENGTH_LONG).show();
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        // user is in favourite fragment
+        // and selected 'Mark all as Read'
+        if (id == R.id.action_clear) {
+            if (getUid() != null) {
+                DatabaseReference reference = FirebaseDatabase.getInstance()
+                        .getReference()
+                        .child("favourite_events")
+                        .child(getUid());
+                reference.removeValue();
+                feedback("Clear All!");
+            } else {
+                feedback("please login!");
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 
 

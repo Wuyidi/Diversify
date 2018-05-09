@@ -28,7 +28,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Intent playIntent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        builder.setContentTitle("Diversify").setContentText("Today you have a event to attend.").setSmallIcon(R.drawable.ic_launch).setDefaults(Notification.DEFAULT_ALL).setContentIntent(pendingIntent).setAutoCancel(true);
+        builder.setContentTitle("Diversify").setContentText("Today you have a event to attend.").setSmallIcon(R.drawable.ic_warning).setDefaults(Notification.DEFAULT_ALL).setContentIntent(pendingIntent).setAutoCancel(true);
         manager.notify(1, builder.build());
     }
 }

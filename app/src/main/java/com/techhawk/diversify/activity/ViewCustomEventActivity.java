@@ -142,24 +142,6 @@ public class ViewCustomEventActivity extends BaseActivity {
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//
-//                            GmailSender sender = new GmailSender("techhawks.diversify@gmail.com",
-//                                    "techhawks");
-//
-//                            String body = "Hello,\n" + event.getName() ;
-//
-//                            sender.sendMail("Hello from TechHawks.Diversify", body,
-//                                    "techhawks.diversify@gmail.com", "eddiewuyidi@gmail.com");
-//                        } catch (Exception e) {
-//                            Log.e("SendMail", e.getMessage(), e);
-//                        }
-//                    }
-//
-//                }).start();
                 buildDialog();
             }
         });
@@ -231,11 +213,17 @@ public class ViewCustomEventActivity extends BaseActivity {
         BottomNavigationItem item2 = new BottomNavigationItem(R.drawable.ic_comment, R.string.tab_comment);
         BottomNavigationItem item3 = new BottomNavigationItem(R.drawable.ic_map, R.string.tab_map);
         bottomNavigationBar.addItem(item1).addItem(item2).addItem(item3).initialise();
+        bottomNavigationBar.selectTab(0, false);
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
             @Override
             public void onTabSelected(int position) {
                 if (position == 1) {
                     Intent intent = new Intent(ViewCustomEventActivity.this,CommentActivity.class);
+                    intent.putExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY, eventKey);
+                    startActivity(intent);
+                    finish();
+                } else if (position == 2) {
+                    Intent intent = new Intent(ViewCustomEventActivity.this,ViewLocationActivity.class);
                     intent.putExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY, eventKey);
                     startActivity(intent);
                     finish();
