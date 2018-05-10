@@ -199,11 +199,14 @@ public class ViewCustomEventActivity extends BaseActivity {
     }
 
     private void setText() {
-        titleField.setText(event.getName());
-        dateField.setText(event.getDate());
-        locationField.setText(event.getLocation());
-        descField.setText(event.getDescription());
-        contactField.setText(event.getContact());
+        if (event != null) {
+            titleField.setText(event.getName());
+            dateField.setText(event.getDate());
+            locationField.setText(event.getLocation());
+            descField.setText(event.getDescription());
+            contactField.setText(event.getContact());
+        }
+
     }
 
 

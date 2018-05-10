@@ -162,16 +162,19 @@ public class EditCustomEventActivity extends BaseActivity {
     }
 
     private void setUI() {
-        inputName.setText(event.getName(), TextView.BufferType.EDITABLE);
-        inputDescription.setText(event.getDescription(), TextView.BufferType.EDITABLE);
-        inputLocation.setText(event.getLocation(),TextView.BufferType.EDITABLE);
-        switchButton.setChecked(isPublic);
-        String date = event.getDate();
-        String[] dateParts = date.split("-");
-        int day = Integer.parseInt(dateParts[0]);
-        int month = (Integer.parseInt(dateParts[1])>0)? Integer.parseInt(dateParts[1])-1:0;
-        int year = Integer.parseInt(dateParts[2]);
-        inputDate.updateDate(year,month,day);
+        if (event != null) {
+            inputName.setText(event.getName(), TextView.BufferType.EDITABLE);
+            inputDescription.setText(event.getDescription(), TextView.BufferType.EDITABLE);
+            inputLocation.setText(event.getLocation(),TextView.BufferType.EDITABLE);
+            switchButton.setChecked(isPublic);
+            String date = event.getDate();
+            String[] dateParts = date.split("-");
+            int day = Integer.parseInt(dateParts[0]);
+            int month = (Integer.parseInt(dateParts[1])>0)? Integer.parseInt(dateParts[1])-1:0;
+            int year = Integer.parseInt(dateParts[2]);
+            inputDate.updateDate(year,month,day);
+        }
+
     }
 
     private void save() {

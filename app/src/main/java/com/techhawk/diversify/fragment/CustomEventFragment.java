@@ -289,7 +289,7 @@ public class CustomEventFragment extends BaseFragment implements View.OnClickLis
         adapter2.getRef(position).removeValue();
         DatabaseReference publicRef = FirebaseDatabase.getInstance().getReference().child("custom_events/"+key);
         if (publicRef != null) {
-            publicRef.setValue(null);
+            publicRef.removeValue();
         }
 
     }
