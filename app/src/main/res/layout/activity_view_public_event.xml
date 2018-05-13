@@ -60,8 +60,8 @@
                     android:background="@android:color/transparent"
                     android:button="@drawable/custom_favourite_button"
                     android:textColor="@android:color/black"
-                    android:textOn="like"
-                    android:textOff="unlike"/>
+                    android:textOn="saved"
+                    android:textOff=""/>
 
                 <Button
                     android:id="@+id/btn_share"

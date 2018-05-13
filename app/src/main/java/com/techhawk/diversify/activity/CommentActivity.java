@@ -171,7 +171,7 @@ public class CommentActivity extends BaseActivity {
                         if (databaseError != null) {
                             feedback("Comment couldn't be submitted " + databaseError.getMessage());
                         } else {
-                            feedback("Submit comment successfully");
+                            feedback("Comment received for moderation");
                         }
 
                     }
@@ -191,10 +191,16 @@ public class CommentActivity extends BaseActivity {
     private void submit() {
         String content = inputComment.getText().toString().trim();
         if (validateForm()) {
-            createNewComment(content);
+            if (validateWord()) {
+                createNewComment(content);
+            } else {
+                feedback("Please choose from following: good, bad or average!");
+            }
+
         } else {
             feedback("Error: Comment is empty!");
         }
+        inputComment.setText("");
     }
 
     private boolean validateForm() {
@@ -368,6 +374,8 @@ public class CommentActivity extends BaseActivity {
         BottomNavigationItem item1 = new BottomNavigationItem(R.drawable.ic_event, R.string.tab_info);
         BottomNavigationItem item2 = new BottomNavigationItem(R.drawable.ic_comment, R.string.tab_comment);
         BottomNavigationItem item3 = new BottomNavigationItem(R.drawable.ic_map, R.string.tab_map);
+        bottomNavigationBar.setInActiveColor(R.color.colorAccent);
+        bottomNavigationBar.setActiveColor(R.color.colorPrimary);
         bottomNavigationBar.addItem(item1).addItem(item2).addItem(item3).initialise();
         bottomNavigationBar.selectTab(1, false);
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
@@ -421,6 +429,15 @@ public class CommentActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
 
+    }
+
+    private boolean validateWord() {
+        boolean b = false;
+        String text = inputComment.getText().toString().trim().toLowerCase();
+        if (text.equals("good") || text.equals("bad") || text.equals("average")) {
+            b = true;
+        }
+        return b;
     }
 
 

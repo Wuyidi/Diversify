@@ -81,7 +81,7 @@ public class ViewFestivalActivity extends AppCompatActivity implements DatePicke
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.calendar_view, menu);
+//        inflater.inflate(R.menu.calendar_view, menu);
         return  true;
     }
 

@@ -215,6 +215,8 @@ public class ViewCustomEventActivity extends BaseActivity {
         BottomNavigationItem item1 = new BottomNavigationItem(R.drawable.ic_event, R.string.tab_info);
         BottomNavigationItem item2 = new BottomNavigationItem(R.drawable.ic_comment, R.string.tab_comment);
         BottomNavigationItem item3 = new BottomNavigationItem(R.drawable.ic_map, R.string.tab_map);
+        bottomNavigationBar.setInActiveColor(R.color.colorAccent);
+        bottomNavigationBar.setActiveColor(R.color.colorPrimary);
         bottomNavigationBar.addItem(item1).addItem(item2).addItem(item3).initialise();
         bottomNavigationBar.selectTab(0, false);
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {

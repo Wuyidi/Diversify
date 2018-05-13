@@ -112,39 +112,42 @@ public class ViewPublicEventActivity extends BaseActivity implements DatePickerD
 
         auth.addAuthStateListener(authStateListener);
 
-        favouriteRef = FirebaseDatabase.getInstance()
-                .getReference()
-                .child("favourite_events")
-                .child(getUid())
-                .child("public_events")
-                .child(key);
+        if (getUid() != null) {
+            favouriteRef = FirebaseDatabase.getInstance()
+                    .getReference()
+                    .child("favourite_events")
+                    .child(getUid())
+                    .child("public_events")
+                    .child(key);
 
-        favouriteRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChildren()) {
-                    favouriteBtn.setChecked(true);
-                } else {
-                    favouriteBtn.setChecked(false);
+            favouriteRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.hasChildren()) {
+                        favouriteBtn.setChecked(true);
+                    } else {
+                        favouriteBtn.setChecked(false);
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
 
-       favouriteBtn.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               if (favouriteBtn.isChecked()) {
-                  addFavourite();
-               } else {
-                   removeFavourite();
-               }
-           }
-       });
+            favouriteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (favouriteBtn.isChecked()) {
+                        addFavourite();
+                    } else {
+                        removeFavourite();
+                    }
+                }
+            });
+        }
+
 
        shareButton = findViewById(R.id.btn_share);
        shareButton.setOnClickListener(new View.OnClickListener() {
@@ -196,7 +199,7 @@ public class ViewPublicEventActivity extends BaseActivity implements DatePickerD
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.calendar_view, menu);
+//        inflater.inflate(R.menu.calendar_view, menu);
         return  true;
     }
 
@@ -210,6 +213,8 @@ public class ViewPublicEventActivity extends BaseActivity implements DatePickerD
         BottomNavigationItem item1 = new BottomNavigationItem(R.drawable.ic_event, R.string.tab_info);
         BottomNavigationItem item2 = new BottomNavigationItem(R.drawable.ic_comment, R.string.tab_comment);
         BottomNavigationItem item3 = new BottomNavigationItem(R.drawable.ic_map, R.string.tab_map);
+        bottomNavigationBar.setInActiveColor(R.color.colorAccent);
+        bottomNavigationBar.setActiveColor(R.color.colorPrimary);
         bottomNavigationBar.addItem(item1).addItem(item2).addItem(item3).initialise();
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
             @Override
