@@ -108,7 +108,6 @@ public class PublicEventFragment extends BaseFragment {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getActivity(), ViewPublicEventActivity.class);
-//                        intent.putExtra("event", model);
                         intent.putExtra("region",region);
                         intent.putExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY,key);
                         startActivity(intent);

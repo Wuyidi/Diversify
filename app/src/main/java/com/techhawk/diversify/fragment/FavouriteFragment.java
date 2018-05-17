@@ -2,6 +2,7 @@ package com.techhawk.diversify.fragment;
 
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
@@ -28,6 +29,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.techhawk.diversify.R;
+import com.techhawk.diversify.activity.CommentActivity;
+import com.techhawk.diversify.activity.ViewCustomEventActivity;
+import com.techhawk.diversify.activity.ViewPublicEventActivity;
 import com.techhawk.diversify.model.FavouriteEvent;
 import com.twiceyuan.dropdownmenu.ArrayDropdownAdapter;
 import com.twiceyuan.dropdownmenu.DropdownMenu;
@@ -168,10 +172,21 @@ public class FavouriteFragment extends BaseFragment {
                 .setLifecycleOwner(this).build();
         publicAdapter = new FirebaseListAdapter<FavouriteEvent>(options) {
             @Override
-            protected void populateView(View v, FavouriteEvent model, int position) {
+            protected void populateView(View v, final FavouriteEvent model, int position) {
+                final String key = this.getRef(position).getKey();
                 ((TextView) v.findViewById(R.id.event_name)).setText(model.getName());
                 ((TextView) v.findViewById(R.id.event_desc)).setText(model.getDesc());
                 ((TextView) v.findViewById(R.id.event_date)).setText(model.getDate());
+
+                v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), ViewPublicEventActivity.class);
+                        intent.putExtra("region",model.getRegion());
+                        intent.putExtra(CommentActivity.EXTRA_COMMENT_EVENT_KEY,key);
+                        startActivity(intent);
+                    }
+                });
 
             }
         };
@@ -186,9 +201,19 @@ public class FavouriteFragment extends BaseFragment {
         customAapter = new FirebaseListAdapter<FavouriteEvent>(options) {
             @Override
             protected void populateView(View v, final FavouriteEvent model, int position) {
+                final String key = this.getRef(position).getKey();
                 ((TextView) v.findViewById(R.id.event_name)).setText(model.getName());
                 ((TextView) v.findViewById(R.id.event_desc)).setText(model.getDesc());
                 ((TextView) v.findViewById(R.id.event_date)).setText(model.getDate());
+
+                v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), ViewCustomEventActivity.class);
+                        intent.putExtra(ViewCustomEventActivity.EXTRA_EVENT_KEY,key);
+                        startActivity(intent);
+                    }
+                });
 
             }
         };

@@ -10,6 +10,7 @@ public class FavouriteEvent {
     private String desc;
     private String date;
     private String location;
+    private String region;
 
     public FavouriteEvent() {
     }
@@ -51,5 +52,13 @@ public class FavouriteEvent {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 }

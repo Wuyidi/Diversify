@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Diversify</string>
+    <string name="app_name">DiverseMe</string>
     <!-- Navigation Drawer menu labels -->
     <string name="nav_home">Home</string>
     <string name="nav_festival">Festival</string>

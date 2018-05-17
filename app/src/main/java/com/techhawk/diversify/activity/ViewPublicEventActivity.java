@@ -252,6 +252,7 @@ public class ViewPublicEventActivity extends BaseActivity implements DatePickerD
         favouriteEvent.setDate(event.getDate());
         favouriteEvent.setDesc(event.getComments());
         favouriteEvent.setLocation(event.getLocation());
+        favouriteEvent.setRegion(region);
 
         favouriteRef.setValue(favouriteEvent);
     }
